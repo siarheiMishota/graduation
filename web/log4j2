@@ -1,0 +1,6 @@
+status = trace
+
+loge4j.appender.console.type = Console
+log4j.appender.console.name = LogToConsole
+log4j.appender.console.layout.type = PatternLayout
+log4j.appender.console.layout.pattern = [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
