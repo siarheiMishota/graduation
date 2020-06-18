@@ -1,5 +1,6 @@
 package by.mishota.graduation.dao.impl;
 
+import by.mishota.graduation.dao.ParamStringDao;
 import by.mishota.graduation.dao.SubjectDao;
 import by.mishota.graduation.dao.pool.ConnectionPool;
 import by.mishota.graduation.entity.Subject;
@@ -10,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.Optional;
+
+import static by.mishota.graduation.dao.ParamStringDao.*;
 
 public class SubjectDaoImpl implements SubjectDao {
 
@@ -35,7 +38,7 @@ public class SubjectDaoImpl implements SubjectDao {
 
             if (resultSet.next()) {
 
-                String name = resultSet.getString("name");
+                String name = resultSet.getString(ParamStringDao.PARAM_SUBJECT_NAME);
                 Subject subject = new Subject();
                 subject.setId(id);
                 subject.setName(name);
@@ -44,9 +47,9 @@ public class SubjectDaoImpl implements SubjectDao {
                 return Optional.of(subject);
             }
         } catch (SQLException e) {
-            throw new DaoException("Error getting result", e);
+            throw new DaoException(ERROR_GETTING_RESULT, e);
         } catch (ConnectionPoolException e) {
-            throw new DaoException("Error getting connection", e);
+            throw new DaoException(ERROR_GETTING_CONNECTION, e);
         } finally {
             close(connection, statement, resultSet);
         }
@@ -74,7 +77,7 @@ public class SubjectDaoImpl implements SubjectDao {
                     if (generatedKeys.next()) {
                         subject.setId(generatedKeys.getInt(1));
                     } else {
-                        throw new DaoException("Creating subject failed, no ID obtained.");
+                        throw new DaoException(CREATING_SUBJECT_FAILED_NO_ID_OBTAINED);
                     }
                 } catch (Exception e) {
 
@@ -85,12 +88,12 @@ public class SubjectDaoImpl implements SubjectDao {
         } catch (SQLException e) {
 
             if (e.getErrorCode() ==DUPLICATE_ENTRY_ERROR_CODE){
-                throw new DaoException("cannot insert a duplicate subject ",e);
+                throw new DaoException(CANNOT_INSERT_A_DUPLICATE_SUBJECT_,e);
             }
                 System.out.println(e.getErrorCode());
-            throw new DaoException("Error connecting to database", e);
+            throw new DaoException(ERROR_CONNECTING_TO_DATABASE, e);
         } catch (ConnectionPoolException e) {
-            throw new DaoException("Error getting connection", e);
+            throw new DaoException(ERROR_GETTING_CONNECTION, e);
         } finally {
             close(connection, statement, generatedKeys);
         }

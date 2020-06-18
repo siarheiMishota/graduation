@@ -6,7 +6,8 @@
 <body>
 <h3>Welcome</h3>
 <hr/>
-<h2>${user}, hello</h2>
+<h2>${login}, hello</h2>
+<h2>${role}, hello</h2>
 <hr/>
 <a href="controller?command=logout">logout</a>
 

@@ -6,8 +6,6 @@ import by.mishota.graduation.entity.Gender;
 import by.mishota.graduation.entity.User;
 import by.mishota.graduation.exception.ConnectionPoolException;
 import by.mishota.graduation.exception.DaoException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Path;
 import java.sql.*;
@@ -15,19 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static by.mishota.graduation.dao.ParamStringDao.*;
+
 public class UserDaoImpl implements UserDao {
 
     private static final int DUPLICATE_ENTRY_ERROR_CODE = 1062;
 
-    private static Logger logger = LogManager.getLogger();
-
-    /*language=MySQL*/
     private static final String SELECT_ALL_USERS = "SELECT * FROM users";
     private static final String SELECT_FIND_BY_ID = "SELECT * FROM users where id=";
     private static final String SELECT_FIND_BY_LOGIN = "SELECT * FROM users where login=";
     private static final String SELECT_ALL_MALE = "SELECT * FROM users where gender='male'";
     private static final String SELECT_ALL_FEMALES = "SELECT * FROM users where gender='female'";
-    private static final String SELECT_ALL_ADULT = "SELECT * FROM users where date_birth  <DATE_ADD(CURDATE(), INTERVAL -18 YEAR )";
+    private static final String SELECT_ALL_ADULT = "SELECT * FROM users where date_birth  <DATE_ADD(CURDATE(), INTERVAL -18 YEAR )"; //TODO
     private static final String SELECT_ALL_ADULTS = "SELECT * FROM users where date_birth > NOW()";
     private static final String INSERT_NEW_USER = "INSERT INTO users( passport_id, date_birth, login, password, email," +
             " first_name, surname, father_name, gender, confirmed) value(?,?,?,?,?,?,?,?,?,?)";
@@ -86,7 +83,7 @@ public class UserDaoImpl implements UserDao {
 
             preparedStatement.setInt(1, user.getPassportId());
             preparedStatement.setDate(2, Date.valueOf(user.getBirth()));
-            preparedStatement.setString(3, user.getLogin());
+            preparedStatement.setString(3, user.getLogin().toLowerCase());
             preparedStatement.setString(4, user.getPassword());
             preparedStatement.setString(5, user.getEmail());
             preparedStatement.setString(6, user.getFirstName());
@@ -108,11 +105,11 @@ public class UserDaoImpl implements UserDao {
 
         } catch (SQLException e) {
             if (e.getErrorCode() == DUPLICATE_ENTRY_ERROR_CODE) {
-                throw new DaoException("cannot insert a duplicate user ", e);
+                throw new DaoException(CANNOT_INSERT_A_DUPLICATE_USER_, e);
             }
-            throw new DaoException("Error getting id of the user", e);
+            throw new DaoException(ERROR_GETTING_ID_OF_THE_USER, e);
         } catch (ConnectionPoolException e) {
-            throw new DaoException("Error getting connection", e);
+            throw new DaoException(ERROR_GETTING_CONNECTION, e);
         } finally {
             close(connection, preparedStatement, generatedKeys);
         }
@@ -138,9 +135,9 @@ public class UserDaoImpl implements UserDao {
                 users.add(user);
             }
         } catch (SQLException e) {
-            throw new DaoException("Error getting result", e);
+            throw new DaoException(ERROR_GETTING_RESULT, e);
         } catch (ConnectionPoolException e) {
-            throw new DaoException("Error getting connection", e);
+            throw new DaoException(ERROR_GETTING_CONNECTION, e);
         } finally {
             close(connection, statement, resultSet);
         }
@@ -151,18 +148,18 @@ public class UserDaoImpl implements UserDao {
     private User parseUser(ResultSet resultSet) throws SQLException {
         User.Builder builder = new User.Builder();
 
-        builder.setId(resultSet.getInt("id"));
-        builder.setPassportId(resultSet.getInt("passport_id"));
-        builder.setBirth(resultSet.getDate("date_birth").toLocalDate());
-        builder.setLogin(resultSet.getString("login"));
-        builder.setPassword(resultSet.getString("password"));
-        builder.setEmail(resultSet.getString("email"));
-        builder.setFirstName(resultSet.getString("first_name"));
-        builder.setSurname(resultSet.getString("surname"));
-        builder.setFatherName(resultSet.getString("father_name"));
-        builder.setGender(Gender.valueOfIgnoreCase(resultSet.getString("gender")));
-        builder.setConfirmed(resultSet.getBoolean("confirmed"));
-        builder.setPathToPhoto(Path.of(resultSet.getString("photo")));
+        builder.setId(resultSet.getInt(PARAM_USER_ID));
+        builder.setPassportId(resultSet.getInt(PARAM_USER_PASSPORT_ID));
+        builder.setBirth(resultSet.getDate(PARAM_USER_DATE_BIRTH).toLocalDate());
+        builder.setLogin(resultSet.getString(PARAM_USER_LOGIN));
+        builder.setPassword(resultSet.getString(PARAM_USER_PASSWORD));
+        builder.setEmail(resultSet.getString(PARAM_USER_EMAIL));
+        builder.setFirstName(resultSet.getString(PARAM_USER_FIRST_NAME));
+        builder.setSurname(resultSet.getString(PARAM_USER_SURNAME));
+        builder.setFatherName(resultSet.getString(PARAM_USER_FATHER_NAME));
+        builder.setGender(Gender.valueOfIgnoreCase(resultSet.getString(PARAM_USER_GENDER)));
+        builder.setConfirmed(resultSet.getBoolean(PARAM_USER_CONFIRMED));
+        builder.setPathToPhoto(Path.of(resultSet.getString(PARAM_USER_PHOTO)));
 
         return builder.build();
     }

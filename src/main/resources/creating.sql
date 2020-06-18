@@ -1,16 +1,17 @@
 create table users
 (
     id          int auto_increment,
-    passport_id int                   not null,
-    date_birth  date                  not null,
-    login       varchar(25)           not null,
-    password    varchar(30)           not null,
-    email       varchar(40)           not null,
-    first_name  varchar(25)           not null,
-    surname     varchar(25)           not null,
-    father_name varchar(25)           not null,
+    passport_id int                     not null,
+    date_birth  date                    not null,
+    login       varchar(25)             not null,
+    password    varchar(30)             not null,
+    email       varchar(40)             not null,
+    first_name  varchar(25)             not null,
+    surname     varchar(25)             not null,
+    father_name varchar(25)             not null,
     gender      enum ('male', 'female') not null,
-    confirmed   boolean default false,
+    confirmed   boolean                default false,
+    role        enum ('user', 'admin') default 'user',
 
     primary key (id),
 
@@ -22,7 +23,7 @@ create table users
 
 create table entrants
 (
-    id int auto_increment,
+    id      int auto_increment,
     user_id int,
 
     primary key (id)
@@ -30,42 +31,41 @@ create table entrants
 
 create table faculties
 (
-    id   int auto_increment,
-    name varchar(100) not null,
-    number_free_places int         not null,
-    number_pay_places  int         not null,
+    id                 int auto_increment,
+    name               varchar(100) not null,
+    number_free_places int          not null,
+    number_pay_places  int          not null,
 
     primary key (id)
 );
 
 create table entrants_faculties_priority
 (
-    id int auto_increment,
-    entrant_id int not null ,
-    faculties_id int not null ,
-    priority int not null ,
+    id           int auto_increment,
+    entrant_id   int not null,
+    faculties_id int not null,
+    priority     int not null,
 
     primary key (id),
 
 
-
-    foreign key (entrant_id) REFERENCES entrants(id),
-    foreign key (faculties_id) REFERENCES faculties(id)
+    foreign key (entrant_id) REFERENCES entrants (id),
+    foreign key (faculties_id) REFERENCES faculties (id)
 );
 
 create table subjects
 (
     id   int auto_increment,
-    name varchar(30) not null unique ,
+    name varchar(30) not null unique,
 
     primary key (id)
 );
 
 create table subjects_to_faculties
 (
-    id         int auto_increment,
-    faculties_id   int not null,
-    subject_id int not null,
+    id           int auto_increment,
+    faculties_id int not null,
+    subject_id   int not null,
 
     primary key (id),
     foreign key (faculties_id) references faculties (id),
@@ -75,7 +75,7 @@ create table subjects_to_faculties
 create table subjects_results
 (
     id            int auto_increment,
-    entrant_id       int not null,
+    entrant_id    int not null,
     subject_id    int not null,
     number_points int not null,
 
@@ -86,15 +86,19 @@ create table subjects_results
 
 create table students
 (
-    id       int auto_increment,
-    user_id  int     not null,
+    id           int auto_increment,
+    user_id      int     not null,
     faculties_id int     not null,
-    budget   boolean not null,
+    budget       boolean not null,
 
     primary key (id),
     foreign key (user_id) references users (id),
     foreign key (faculties_id) references faculties (id)
 );
+
+insert into users(passport_id, date_birth, login, password, email, first_name, surname, father_name, gender, confirmed,role)
+value (659,'1996-05-08','mishota','solo','soloyoloswag1@yandex.ru','Мишота','Сергей','Александрович','male',
+      true,'admin');
 
 insert into users(passport_id, date_birth, login, password, email, first_name, surname, father_name, gender, confirmed)
 values (530, '1961-11-06', 'kryazev', 'passwordkryazev', 'kryazev@gmail.com', 'Кряжев', 'Олег', 'Викторович', 'male',
@@ -102,7 +106,7 @@ values (530, '1961-11-06', 'kryazev', 'passwordkryazev', 'kryazev@gmail.com', '�
        (510, '1961-02-08', 'uzefovich', 'uzefovichPassword', 'uzefovich@gmail.com', 'Юзефович', 'Сергей',
         'Викторович', 'male', true),
        (503, '1971-01-06', 'makarevich', 'makarevichPassword', 'makarevich@gmail.com', 'Макаревич', 'Андрей',
-        'Вадимович','male', true),
+        'Вадимович', 'male', true),
        (531, '1991-2-19', 'prokopovich', 'prokopovichPassword', 'prokopovich@gmail.com', 'Прокопович', 'Виталий',
         'Анатольевич',
         'male', true),
@@ -140,14 +144,14 @@ values (530, '1961-11-06', 'kryazev', 'passwordkryazev', 'kryazev@gmail.com', '�
         'Степановна',
         'female', true);
 
-insert into subjects( name)
-VALUES('maths'),
-      ('physics'),
-      ('russian language'),
-      ('chemistry'),
-      ('biology'),
-      ('history'),
-      ('geography'),
-      ('social science'),
-      ('english language'),
-      ('french language');
+insert into subjects(name)
+VALUES ('maths'),
+       ('physics'),
+       ('russian language'),
+       ('chemistry'),
+       ('biology'),
+       ('history'),
+       ('geography'),
+       ('social science'),
+       ('english language'),
+       ('french language');

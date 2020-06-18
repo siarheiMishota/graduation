@@ -1,3 +1,3 @@
 url=jdbc:mysql://localhost:3306/commission?useUnicode=true&serverTimezone=UTC
-user=root
+login=root
 password=root

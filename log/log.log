@@ -1,0 +1,12 @@
+2020-06-17 23:43:01,741 ERROR b.m.g.Main [main] error
+2020-06-17 23:43:01,754 INFO b.m.g.Main [main] info
+2020-06-17 23:43:01,755 DEBUG b.m.g.Main [main] debug
+2020-06-17 23:43:01,757 TRACE b.m.g.Main [main] java.lang.RuntimeException: runtime exception
+23:43:23.927 [main] ERROR by.mishota.graduation.Main - error
+23:43:23.936 [main] INFO  by.mishota.graduation.Main - info
+23:43:23.936 [main] DEBUG by.mishota.graduation.Main - debug
+23:43:23.938 [main] TRACE by.mishota.graduation.Main - java.lang.RuntimeException: runtime exception
+00:00:39.555 [main] ERROR by.mishota.graduation.Main - error
+00:00:39.565 [main] INFO  by.mishota.graduation.Main - info
+00:00:39.565 [main] DEBUG by.mishota.graduation.Main - debug
+00:00:39.567 [main] TRACE by.mishota.graduation.Main - java.lang.RuntimeException: runtime exception

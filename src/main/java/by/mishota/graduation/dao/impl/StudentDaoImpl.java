@@ -26,37 +26,37 @@ public class StudentDaoImpl implements StudentDao {
     @Override
     public List<Student> findAll() {
         return null;
-    }
+    } //todo
 
     @Override
     public List<Student> findByFaculty() {
         return null;
-    }
+    } //todo
 
     @Override
     public List<Student> findByFree() {
         return null;
-    }
+    } //todo
 
     @Override
     public List<Student> findByPay() {
         return null;
-    }
+    } //todo
 
     @Override
     public List<Student> findAllFemale() {
         return null;
-    }
+    } //todo
 
     @Override
     public List<Student> findAllMale() {
         return null;
-    }
+    } //todo
 
     @Override
     public Optional<Student> findById() {
         return Optional.empty();
-    }
+    } //todo
 
     private List<Student> findStudents(String sqlRequest) throws DaoException {
         ConnectionPool pool;
@@ -82,7 +82,7 @@ public class StudentDaoImpl implements StudentDao {
             close(connection, statement, resultSet);
         }
         return students;
-    }
+    } //todo
 
 
     private Student parseStudent(ResultSet resultSet) throws SQLException, DaoException {
@@ -103,6 +103,6 @@ public class StudentDaoImpl implements StudentDao {
 
         return student;
 
-    }
+    } //todo
 
 }

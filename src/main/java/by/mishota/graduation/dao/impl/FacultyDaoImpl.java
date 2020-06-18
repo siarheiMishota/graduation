@@ -16,28 +16,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static by.mishota.graduation.dao.ParamStringDao.*;
+
 public class FacultyDaoImpl implements FacultyDao {
 
     private static final int DUPLICATE_ENTRY_ERROR_CODE = 1062;
+
 
     private static Logger logger = LogManager.getLogger();
 
     @Override
     public List<Faculty> findAll() {
         return null;
-    }
+    }//TODO
 
     @Override
     public Optional<Faculty> findById() {
         return Optional.empty();
-    }
+    }//TODO
 
     @Override
     public List<Faculty> findWhereFreeMoreSpecify(int specifyPlaces) {
         return null;
-    }
+    }//TODO
 
-    private List<Faculty> findFaculty(String sqlRequest) throws DaoException {
+    private List<Faculty> findFaculty(String sqlRequest) throws DaoException {//TODO
         ConnectionPool pool;
         Connection connection = null;
         Statement statement = null;
@@ -54,9 +57,9 @@ public class FacultyDaoImpl implements FacultyDao {
                 faculties.add(faculty);
             }
         } catch (SQLException e) {
-            throw new DaoException("Error getting result", e);
+            throw new DaoException(ERROR_GETTING_RESULT, e);
         } catch (ConnectionPoolException e) {
-            throw new DaoException("Error getting connection", e);
+            throw new DaoException(ERROR_GETTING_CONNECTION, e);
         } finally {
             close(connection, statement, resultSet);
         }
@@ -64,17 +67,17 @@ public class FacultyDaoImpl implements FacultyDao {
     }
 
 
-    private Faculty parseFaculty(ResultSet resultSet) throws SQLException {
+    private Faculty parseFaculty(ResultSet resultSet) throws SQLException {//TODO
 
         Faculty faculty = new Faculty();
 
-        faculty.setId(resultSet.getInt("id"));
-        faculty.setName(resultSet.getString("name"));
-        faculty.setNumberFreePlaces(resultSet.getInt("number_free_places"));
-        faculty.setNumberPayPlaces(resultSet.getInt("number_pay_places"));
-        faculty.setNeedSubjects(resultSet.getInt("need_subjects"));
+        faculty.setId(resultSet.getInt(PARAM_SUBJECT_ID));
+        faculty.setName(resultSet.getString(PARAM_FACULTY_NAME));
+        faculty.setNumberFreePlaces(resultSet.getInt(PARAM_FACULTY_NUMBER_FREE_PLACES));
+        faculty.setNumberPayPlaces(resultSet.getInt(PARAM_FACULTY_NUMBER_PAY_PLACES));
+//        faculty.setNeedSubjects(resultSet.getInt("need_subjects"));
+        return faculty;
     }
-
 
 
 }

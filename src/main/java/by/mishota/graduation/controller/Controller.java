@@ -1,7 +1,7 @@
 package by.mishota.graduation.controller;
 
 import by.mishota.graduation.command.ActionCommand;
-import by.mishota.graduation.command.factory.ActionFactory;
+import by.mishota.graduation.command.factory.CommandFactory;
 import by.mishota.graduation.resource.ConfigurationManager;
 import by.mishota.graduation.resource.MessageManager;
 
@@ -29,7 +29,7 @@ public class Controller extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String page = null;
-        ActionFactory clientFactory = new ActionFactory();
+        CommandFactory clientFactory = new CommandFactory();
         Optional<ActionCommand> command = clientFactory.defineCommand(request.getParameter("command"));
 
         if (command.isPresent()) {
