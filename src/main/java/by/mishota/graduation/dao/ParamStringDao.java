@@ -30,4 +30,8 @@ public class ParamStringDao {
     public static final String CREATING_SUBJECT_FAILED_NO_ID_OBTAINED = "Creating subject failed, no ID obtained.";
     public static final String CANNOT_INSERT_A_DUPLICATE_SUBJECT_ = "Cannot insert a duplicate subject ";
     public static final String ERROR_CONNECTING_TO_DATABASE = "Error connecting to database";
+    public static final String PARAM_STUDENT_ID = "id";
+    public static final String PARAM_STUDENT_BUDGET = "budget";
+    public static final String PARAM_STUDENT_FACULTY_ID = "faculty_id";
+    public static final String PARAM_STUDENT_USER_ID = "user_id";
 }

@@ -36,6 +36,8 @@ create table faculties
     number_free_places int          not null,
     number_pay_places  int          not null,
 
+    unique (name),
+
     primary key (id)
 );
 
@@ -86,19 +88,20 @@ create table subjects_results
 
 create table students
 (
-    id           int auto_increment,
-    user_id      int     not null,
-    faculties_id int     not null,
-    budget       boolean not null,
+    id         int auto_increment,
+    user_id    int     not null,
+    faculty_id int     not null,
+    budget     boolean not null,
 
     primary key (id),
     foreign key (user_id) references users (id),
-    foreign key (faculties_id) references faculties (id)
+    foreign key (faculty_id) references faculties (id)
 );
 
-insert into users(passport_id, date_birth, login, password, email, first_name, surname, father_name, gender, confirmed,role)
-value (659,'1996-05-08','mishota','solo','soloyoloswag1@yandex.ru','Мишота','Сергей','Александрович','male',
-      true,'admin');
+insert into users(passport_id, date_birth, login, password, email, first_name, surname, father_name, gender, confirmed,
+                  role)
+    value (659, '1996-05-08', 'mishota', 'solo', 'soloyoloswag1@yandex.ru', 'Мишота', 'Сергей', 'Александрович', 'male',
+           true, 'admin');
 
 insert into users(passport_id, date_birth, login, password, email, first_name, surname, father_name, gender, confirmed)
 values (530, '1961-11-06', 'kryazev', 'passwordkryazev', 'kryazev@gmail.com', 'Кряжев', 'Олег', 'Викторович', 'male',
@@ -155,3 +158,40 @@ VALUES ('maths'),
        ('social science'),
        ('english language'),
        ('french language');
+
+insert into faculties (name, number_free_places, number_pay_places)
+values ('ФИТР', 5, 5),
+       ('АТФ', 2, 3),
+       ('ФГДЭ', 4, 3),
+       ('МСФ', 6, 6),
+       ('МТФ', 2, 3),
+       ('ФММП', 6, 4),
+       ('ЭФ', 7, 2),
+       ('ФТУГ', 10, 0),
+       ('ИПФ', 0, 12),
+       ('ФЭС', 4, 4),
+       ('АС', 3, 3),
+       ('СФ', 2, 2),
+       ('ПСФ', 5, 2)
+;
+
+insert into students (user_id, faculty_id, budget)
+values (1,43,true),
+       (2,44,true),
+       (3,45,false),
+       (4,46,false),
+       (5,47,true),
+       (6,48,false),
+       (7,49,true),
+       (8,50,false),
+       (9,51,false),
+       (10,52,true)
+;
+
+insert into subjects_to_faculties (faculties_id, subject_id)
+values (43,1),
+       (43,2),
+       (43,3),
+       (44,4),
+       (44,3),
+       (44,2);

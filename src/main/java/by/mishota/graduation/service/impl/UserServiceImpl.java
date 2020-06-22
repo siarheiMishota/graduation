@@ -21,7 +21,10 @@ public class UserServiceImpl implements UserService {
                 return foundUser.get().getPassword().equals(password);
             }
         } catch (DaoException e) {
+            System.out.println("AAAAAAAAA");
+            System.out.println(e);
             throw new ServiceException(ParamStringService.ERROR_GETTING_THE_USER,e);
+
         }
         return false;
     }

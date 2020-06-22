@@ -1,7 +1,7 @@
 package by.mishota.graduation.entity;
 
 public enum Role {
-    USER,ADMIN;
+    GUEST, USER, ADMIN;
 
     public static Role valueOfIgnoreCase(String name) {
 

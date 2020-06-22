@@ -7,7 +7,6 @@ import by.mishota.graduation.entity.User;
 import by.mishota.graduation.exception.ConnectionPoolException;
 import by.mishota.graduation.exception.DaoException;
 
-import java.nio.file.Path;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +51,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> findById(int id) throws DaoException {
-        List<User> users = findUsers(SELECT_FIND_BY_ID);
+        List<User> users = findUsers(SELECT_FIND_BY_ID  + id);
 
         if (users.isEmpty()) {
             return Optional.empty();
@@ -62,7 +61,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> findByLogin(String login) throws DaoException {
-        List<User> users = findUsers(SELECT_FIND_BY_LOGIN);
+        List<User> users = findUsers(SELECT_FIND_BY_LOGIN + "'" + login + "'");
 
         if (users.isEmpty()) {
             return Optional.empty();
@@ -118,6 +117,7 @@ public class UserDaoImpl implements UserDao {
 
     }
 
+
     private List<User> findUsers(String sqlRequest) throws DaoException {
         ConnectionPool pool;
         Connection connection = null;
@@ -144,7 +144,6 @@ public class UserDaoImpl implements UserDao {
         return users;
     }
 
-
     private User parseUser(ResultSet resultSet) throws SQLException {
         User.Builder builder = new User.Builder();
 
@@ -159,7 +158,7 @@ public class UserDaoImpl implements UserDao {
         builder.setFatherName(resultSet.getString(PARAM_USER_FATHER_NAME));
         builder.setGender(Gender.valueOfIgnoreCase(resultSet.getString(PARAM_USER_GENDER)));
         builder.setConfirmed(resultSet.getBoolean(PARAM_USER_CONFIRMED));
-        builder.setPathToPhoto(Path.of(resultSet.getString(PARAM_USER_PHOTO)));
+//        builder.setPathToPhoto(Path.of(resultSet.getString(PARAM_USER_PHOTO)));  //todo
 
         return builder.build();
     }

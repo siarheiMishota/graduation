@@ -1,0 +1,22 @@
+2020-06-20 20:14:07 [main] WARN  by.mishota.graduation.dao.Dao - Connection isn't closed
+java.sql.SQLException: Error releasing connection
+	at by.mishota.graduation.dao.pool.ProxyConnection.close(ProxyConnection.java:65) ~[classes/:?]
+	at by.mishota.graduation.dao.Dao.close(Dao.java:35) [classes/:?]
+	at by.mishota.graduation.dao.impl.StudentDaoImpl.findStudents(StudentDaoImpl.java:104) [classes/:?]
+	at by.mishota.graduation.dao.impl.StudentDaoImpl.findById(StudentDaoImpl.java:67) [classes/:?]
+	at by.mishota.graduation.dao.impl.StudentDaoImpl.main(StudentDaoImpl.java:77) [classes/:?]
+Caused by: by.mishota.graduation.exception.ConnectionPoolException: Can't return the connection to the pool that is not from the pool
+	at by.mishota.graduation.dao.pool.ConnectionPool.releaseConnection(ConnectionPool.java:115) ~[classes/:?]
+	at by.mishota.graduation.dao.pool.ProxyConnection.close(ProxyConnection.java:63) ~[classes/:?]
+	... 4 more
+2020-06-20 20:21:23 [main] WARN  by.mishota.graduation.dao.Dao - Connection isn't closed
+java.sql.SQLException: Error releasing connection
+	at by.mishota.graduation.dao.pool.ProxyConnection.close(ProxyConnection.java:65) ~[classes/:?]
+	at by.mishota.graduation.dao.Dao.close(Dao.java:35) [classes/:?]
+	at by.mishota.graduation.dao.impl.StudentDaoImpl.findStudents(StudentDaoImpl.java:104) [classes/:?]
+	at by.mishota.graduation.dao.impl.StudentDaoImpl.findById(StudentDaoImpl.java:67) [classes/:?]
+	at by.mishota.graduation.dao.impl.StudentDaoImpl.main(StudentDaoImpl.java:77) [classes/:?]
+Caused by: by.mishota.graduation.exception.ConnectionPoolException: Can't return the connection to the pool that is not from the pool
+	at by.mishota.graduation.dao.pool.ConnectionPool.releaseConnection(ConnectionPool.java:115) ~[classes/:?]
+	at by.mishota.graduation.dao.pool.ProxyConnection.close(ProxyConnection.java:63) ~[classes/:?]
+	... 4 more

@@ -3,10 +3,10 @@ package by.mishota.graduation.entity;
 public class SubjectResult {
 
     private int id;
-    private Subject subject;
+    private int subject;
     private int result;
 
-    public SubjectResult(Subject subject, int result) {
+    public SubjectResult(int subject, int result) {
         this.subject = subject;
         this.result = result;
     }
@@ -19,11 +19,11 @@ public class SubjectResult {
         this.id = id;
     }
 
-    public Subject getSubject() {
+    public int getSubject() {
         return subject;
     }
 
-    public void setSubject(Subject subject) {
+    public void setSubject(int subject) {
         this.subject = subject;
     }
 
@@ -35,6 +35,7 @@ public class SubjectResult {
         this.result = result;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -43,14 +44,14 @@ public class SubjectResult {
         SubjectResult that = (SubjectResult) o;
 
         if (id != that.id) return false;
-        if (result != that.result) return false;
-        return subject != null ? subject.equals(that.subject) : that.subject == null;
+        if (subject != that.subject) return false;
+        return result == that.result;
     }
 
     @Override
     public int hashCode() {
         int result1 = id;
-        result1 = 31 * result1 + (subject != null ? subject.hashCode() : 0);
+        result1 = 31 * result1 + subject;
         result1 = 31 * result1 + result;
         return result1;
     }
@@ -59,7 +60,7 @@ public class SubjectResult {
     public String toString() {
 
         StringBuilder builder = new StringBuilder();
-        builder.append("SubjectResult( ").append(id).append(", ").append(subject).append(",  ")
+        builder.append("SubjectResult( ").append(id).append(", id subject= ").append(subject).append(",  ")
                 .append("result= ").append(result).append(")");
         return builder.toString();
     }

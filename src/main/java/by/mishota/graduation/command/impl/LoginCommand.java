@@ -6,6 +6,7 @@ import by.mishota.graduation.exception.ServiceException;
 import by.mishota.graduation.resource.ConfigurationManager;
 import by.mishota.graduation.resource.MessageManager;
 import by.mishota.graduation.service.UserService;
+import com.mysql.cj.log.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +24,9 @@ public class LoginCommand implements ActionCommand {
     public static final String CHECK_USER_IS_ERROR = "Check user is error";
     public static final String ATTRIBUTE_ROLE = "role";
 
-//    private static Logger logger = LogManager.getLogger();
+    private static Logger logger=LogManager.getLogger();
+
+
 
     private UserService userService;
 
@@ -37,7 +40,6 @@ public class LoginCommand implements ActionCommand {
 
         String login = request.getParameter(PARAM_NAME_LOGIN);
         String password = request.getParameter(PARAM_NAME_PASSWORD);
-
         try {
             if (userService.checkUser(login, password)) {
                 request.setAttribute(ATTRIBUTE_LOGIN, login);
@@ -54,7 +56,7 @@ public class LoginCommand implements ActionCommand {
             }
         } catch (ServiceException e) {
             request.setAttribute(INTERNAL_SERVER_ERROR, SERVER_IS_TEMPORARILY_UNAVAILABLE);
-//            logger.warn(CHECK_USER_IS_ERROR, e);
+            logger.warn(CHECK_USER_IS_ERROR, e);
 
         }
         return page;
