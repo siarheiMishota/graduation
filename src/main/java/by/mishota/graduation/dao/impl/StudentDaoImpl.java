@@ -8,8 +8,6 @@ import by.mishota.graduation.entity.Student;
 import by.mishota.graduation.entity.User;
 import by.mishota.graduation.exception.ConnectionPoolException;
 import by.mishota.graduation.exception.DaoException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -19,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static by.mishota.graduation.dao.ParamStringDao.ERROR_GETTING_CONNECTION;
-import static by.mishota.graduation.dao.ParamStringDao.ERROR_GETTING_RESULT;
 
 public class StudentDaoImpl implements StudentDao {
 
@@ -45,7 +41,7 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public List<Student> findAllByFacultyId(int facultyId) throws DaoException {
-        return findStudents(SELECT_ALL_BY_FACULTY_ID+facultyId);
+        return findStudents(SELECT_ALL_BY_FACULTY_ID + facultyId);
 
     }
 
@@ -96,9 +92,9 @@ public class StudentDaoImpl implements StudentDao {
                 students.add(student);
             }
         } catch (SQLException e) {
-            throw new DaoException(ERROR_GETTING_RESULT, e);
+            throw new DaoException("Error getting result", e);
         } catch (ConnectionPoolException e) {
-            throw new DaoException(ERROR_GETTING_CONNECTION, e);
+            throw new DaoException("Error getting connection", e);
         } finally {
             close(connection, statement, resultSet);
         }

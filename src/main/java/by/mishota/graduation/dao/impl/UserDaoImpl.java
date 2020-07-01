@@ -3,6 +3,7 @@ package by.mishota.graduation.dao.impl;
 import by.mishota.graduation.dao.UserDao;
 import by.mishota.graduation.dao.pool.ConnectionPool;
 import by.mishota.graduation.entity.Gender;
+import by.mishota.graduation.entity.Role;
 import by.mishota.graduation.entity.User;
 import by.mishota.graduation.exception.ConnectionPoolException;
 import by.mishota.graduation.exception.DaoException;
@@ -21,12 +22,60 @@ public class UserDaoImpl implements UserDao {
     private static final String SELECT_ALL_USERS = "SELECT * FROM users";
     private static final String SELECT_FIND_BY_ID = "SELECT * FROM users where id=";
     private static final String SELECT_FIND_BY_LOGIN = "SELECT * FROM users where login=";
+    private static final String SELECT_FIND_BY_EMAIL = "SELECT * FROM users where email=";
     private static final String SELECT_ALL_MALE = "SELECT * FROM users where gender='male'";
     private static final String SELECT_ALL_FEMALES = "SELECT * FROM users where gender='female'";
     private static final String SELECT_ALL_ADULT = "SELECT * FROM users where date_birth  <DATE_ADD(CURDATE(), INTERVAL -18 YEAR )"; //TODO
     private static final String SELECT_ALL_ADULTS = "SELECT * FROM users where date_birth > NOW()";
+
+    private static final String SELECT_FIND_COUNT_BY_PASSPORT_ID = "select count(*) as count from users where passport_id='";
+    private static final String SELECT_FIND_COUNT_BY_LOGIN = "select count(*) as count from users where login='";
+    private static final String SELECT_FIND_COUNT_BY_EMAIL = "select count(*) as count from users where email='";
+
     private static final String INSERT_NEW_USER = "INSERT INTO users( passport_id, date_birth, login, password, email," +
             " first_name, surname, father_name, gender, confirmed) value(?,?,?,?,?,?,?,?,?,?)";
+    public static final String PARAM_COUNT = "count";
+
+
+    @Override
+    public int findCountByEmail(String email) throws DaoException {
+        return countRows(SELECT_FIND_COUNT_BY_EMAIL + email + "'");
+    }
+
+    @Override
+    public int findCountByLogin(String login) throws DaoException {
+        return countRows(SELECT_FIND_COUNT_BY_LOGIN + login + "'");
+
+    }
+
+    @Override
+    public int findCountByPassportId(String passportId) throws DaoException {
+        return countRows(SELECT_FIND_COUNT_BY_PASSPORT_ID + passportId + "'");
+    }
+
+    private int countRows(String query) throws DaoException {
+        ConnectionPool pool;
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            pool = ConnectionPool.getInstance();
+            connection = pool.getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                return resultSet.getInt(PARAM_COUNT);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error getting result", e);
+        } catch (ConnectionPoolException e) {
+            throw new DaoException("Error getting connection", e);
+        } finally {
+            close(connection, statement, resultSet);
+        }
+        return 0;
+    }
 
 
     @Override
@@ -49,9 +98,10 @@ public class UserDaoImpl implements UserDao {
         return findUsers(SELECT_ALL_ADULTS);
     }
 
+
     @Override
     public Optional<User> findById(int id) throws DaoException {
-        List<User> users = findUsers(SELECT_FIND_BY_ID  + id);
+        List<User> users = findUsers(SELECT_FIND_BY_ID + id);
 
         if (users.isEmpty()) {
             return Optional.empty();
@@ -71,6 +121,17 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public Optional<User> findByEmail(String email) throws DaoException {
+        List<User> users = findUsers(SELECT_FIND_BY_LOGIN + "'" + email + "'");
+
+        if (users.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(users.get(0));
+    }
+
+    @Override
     public Optional<User> add(User user) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -80,7 +141,7 @@ public class UserDaoImpl implements UserDao {
             connection = ConnectionPool.getInstance().getConnection();
             preparedStatement = connection.prepareStatement(INSERT_NEW_USER, Statement.RETURN_GENERATED_KEYS);
 
-            preparedStatement.setInt(1, user.getPassportId());
+            preparedStatement.setString(1, user.getPassportId());
             preparedStatement.setDate(2, Date.valueOf(user.getBirth()));
             preparedStatement.setString(3, user.getLogin().toLowerCase());
             preparedStatement.setString(4, user.getPassword());
@@ -104,11 +165,11 @@ public class UserDaoImpl implements UserDao {
 
         } catch (SQLException e) {
             if (e.getErrorCode() == DUPLICATE_ENTRY_ERROR_CODE) {
-                throw new DaoException(CANNOT_INSERT_A_DUPLICATE_USER_, e);
+                throw new DaoException(CANNOT_INSERT_DUPLICATE_USER, e);
             }
-            throw new DaoException(ERROR_GETTING_ID_OF_THE_USER, e);
+            throw new DaoException("Error getting id of the user", e);
         } catch (ConnectionPoolException e) {
-            throw new DaoException(ERROR_GETTING_CONNECTION, e);
+            throw new DaoException("Error getting connection", e);
         } finally {
             close(connection, preparedStatement, generatedKeys);
         }
@@ -135,9 +196,9 @@ public class UserDaoImpl implements UserDao {
                 users.add(user);
             }
         } catch (SQLException e) {
-            throw new DaoException(ERROR_GETTING_RESULT, e);
+            throw new DaoException("Error getting result", e);
         } catch (ConnectionPoolException e) {
-            throw new DaoException(ERROR_GETTING_CONNECTION, e);
+            throw new DaoException("Error getting connection", e);
         } finally {
             close(connection, statement, resultSet);
         }
@@ -148,7 +209,7 @@ public class UserDaoImpl implements UserDao {
         User.Builder builder = new User.Builder();
 
         builder.setId(resultSet.getInt(PARAM_USER_ID));
-        builder.setPassportId(resultSet.getInt(PARAM_USER_PASSPORT_ID));
+        builder.setPassportId(resultSet.getString(PARAM_USER_PASSPORT_ID));
         builder.setBirth(resultSet.getDate(PARAM_USER_DATE_BIRTH).toLocalDate());
         builder.setLogin(resultSet.getString(PARAM_USER_LOGIN));
         builder.setPassword(resultSet.getString(PARAM_USER_PASSWORD));
@@ -158,10 +219,10 @@ public class UserDaoImpl implements UserDao {
         builder.setFatherName(resultSet.getString(PARAM_USER_FATHER_NAME));
         builder.setGender(Gender.valueOfIgnoreCase(resultSet.getString(PARAM_USER_GENDER)));
         builder.setConfirmed(resultSet.getBoolean(PARAM_USER_CONFIRMED));
+        builder.setRole(Role.valueOfIgnoreCase(resultSet.getString(PARAM_USER_ROLE)));
 //        builder.setPathToPhoto(Path.of(resultSet.getString(PARAM_USER_PHOTO)));  //todo
 
         return builder.build();
+
     }
-
-
 }

@@ -6,26 +6,14 @@ import javax.servlet.annotation.WebInitParam;
 import java.io.IOException;
 
 @WebFilter("/*")
-@WebInitParam(name = "encoding", value = "UTF-8")
 public class EncodingFilter implements Filter {
-
-    private String code;
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        code = filterConfig.getInitParameter("encoding");
-    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
-        String codeRequest = servletRequest.getCharacterEncoding();
+        servletRequest.setCharacterEncoding("UTF-8");
+        servletResponse.setCharacterEncoding("UTF-8");
 
-        if (code != null && !code.equalsIgnoreCase(codeRequest)) {
-            servletRequest.setCharacterEncoding(code);
-            servletResponse.setCharacterEncoding(code);
-        }
-
-        filterChain.doFilter(servletRequest,servletResponse);
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 }

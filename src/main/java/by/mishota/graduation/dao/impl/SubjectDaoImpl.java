@@ -43,7 +43,7 @@ public class SubjectDaoImpl implements SubjectDao {
                     if (generatedKeys.next()) {
                         subject.setId(generatedKeys.getInt(1));
                     } else {
-                        throw new DaoException(CREATING_SUBJECT_FAILED_NO_ID_OBTAINED);
+                        throw new DaoException("Creating subject failed, no ID obtained.");
                     }
                 } catch (Exception e) {
 
@@ -54,12 +54,12 @@ public class SubjectDaoImpl implements SubjectDao {
         } catch (SQLException e) {
 
             if (e.getErrorCode() == DUPLICATE_ENTRY_ERROR_CODE) {
-                throw new DaoException(CANNOT_INSERT_A_DUPLICATE_SUBJECT_, e);
+                throw new DaoException("Cannot insert a duplicate subject ", e);
             }
             System.out.println(e.getErrorCode());
-            throw new DaoException(ERROR_CONNECTING_TO_DATABASE, e);
+            throw new DaoException("Error connecting to database", e);
         } catch (ConnectionPoolException e) {
-            throw new DaoException(ERROR_GETTING_CONNECTION, e);
+            throw new DaoException("Error getting connection", e);
         } finally {
             close(connection, statement, generatedKeys);
         }
@@ -97,9 +97,9 @@ public class SubjectDaoImpl implements SubjectDao {
                 subjects.add(subject);
             }
         } catch (SQLException e) {
-            throw new DaoException(ERROR_GETTING_RESULT, e);
+            throw new DaoException("Error getting result", e);
         } catch (ConnectionPoolException e) {
-            throw new DaoException(ERROR_GETTING_CONNECTION, e);
+            throw new DaoException("Error getting connection", e);
         } finally {
             close(connection, statement, resultSet);
         }

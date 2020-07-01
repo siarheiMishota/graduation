@@ -1,11 +1,12 @@
 package by.mishota.graduation.entity;
 
-import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 
 public class User {
     private int id;
-    private int passportId;
+    private String passportId;
     private LocalDate birth;
     private String login;
     private String password;
@@ -15,10 +16,11 @@ public class User {
     private String fatherName;
     private Gender gender;
     private boolean confirmed;
-    private Path pathToPhoto;
+    private String photo;
+    private Role role;
 
-    private User(int id, int passportId, LocalDate birth, String login, String password, String email, String firstName,
-                 String surname, String fatherName, Gender gender, boolean confirmed, Path pathToPhoto) {
+    private User(int id, String passportId, LocalDate birth, String login, String password, String email, String firstName,
+                 String surname, String fatherName, Gender gender, boolean confirmed, String photo,Role role) {
         this.id = id;
         this.passportId = passportId;
         this.birth = birth;
@@ -30,7 +32,16 @@ public class User {
         this.fatherName = fatherName;
         this.gender = gender;
         this.confirmed = confirmed;
-        this.pathToPhoto = pathToPhoto;
+        this.photo = photo;
+        this.role = role;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public int getId() {
@@ -41,11 +52,11 @@ public class User {
         this.id = id;
     }
 
-    public int getPassportId() {
+    public String getPassportId() {
         return passportId;
     }
 
-    public void setPassportId(int passportId) {
+    public void setPassportId(String passportId) {
         this.passportId = passportId;
     }
 
@@ -121,49 +132,50 @@ public class User {
         this.confirmed = confirmed;
     }
 
-    public Path getPathToPhoto() {
-        return pathToPhoto;
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setPathToPhoto(Path pathToPhoto) {
-        this.pathToPhoto = pathToPhoto;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         User user = (User) o;
 
         if (id != user.id) return false;
-        if (passportId != user.passportId) return false;
         if (confirmed != user.confirmed) return false;
-        if (!birth.equals(user.birth)) return false;
-        if (!login.equals(user.login)) return false;
-        if (!password.equals(user.password)) return false;
-        if (!email.equals(user.email)) return false;
-        if (!firstName.equals(user.firstName)) return false;
-        if (!surname.equals(user.surname)) return false;
-        if (!fatherName.equals(user.fatherName)) return false;
+        if (passportId != null ? !passportId.equals(user.passportId) : user.passportId != null) return false;
+        if (birth != null ? !birth.equals(user.birth) : user.birth != null) return false;
+        if (login != null ? !login.equals(user.login) : user.login != null) return false;
+        if (password != null ? !password.equals(user.password) : user.password != null) return false;
+        if (email != null ? !email.equals(user.email) : user.email != null) return false;
+        if (firstName != null ? !firstName.equals(user.firstName) : user.firstName != null) return false;
+        if (surname != null ? !surname.equals(user.surname) : user.surname != null) return false;
+        if (fatherName != null ? !fatherName.equals(user.fatherName) : user.fatherName != null) return false;
         if (gender != user.gender) return false;
-        return pathToPhoto.equals(user.pathToPhoto);
+        return photo != null ? photo.equals(user.photo) : user.photo == null;
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + passportId;
-        result = 31 * result + birth.hashCode();
-        result = 31 * result + login.hashCode();
-        result = 31 * result + password.hashCode();
-        result = 31 * result + email.hashCode();
-        result = 31 * result + firstName.hashCode();
-        result = 31 * result + surname.hashCode();
-        result = 31 * result + fatherName.hashCode();
-        result = 31 * result + gender.hashCode();
+        result = 31 * result + (passportId != null ? passportId.hashCode() : 0);
+        result = 31 * result + (birth != null ? birth.hashCode() : 0);
+        result = 31 * result + (login != null ? login.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (surname != null ? surname.hashCode() : 0);
+        result = 31 * result + (fatherName != null ? fatherName.hashCode() : 0);
+        result = 31 * result + (gender != null ? gender.hashCode() : 0);
         result = 31 * result + (confirmed ? 1 : 0);
-        result = 31 * result + pathToPhoto.hashCode();
+        result = 31 * result + (photo != null ? photo.hashCode() : 0);
         return result;
     }
 
@@ -182,6 +194,7 @@ public class User {
         builder.append(surname).append(", ");
         builder.append(fatherName).append(", ");
         builder.append(gender).append(", ");
+        builder.append(photo).append(", ");
         builder.append(confirmed);
 
         return builder.toString();
@@ -189,7 +202,7 @@ public class User {
 
     public static class Builder {
         private int id;
-        private int passportId;
+        private String passportId;
         private LocalDate birth;
         private String login;
         private String password;
@@ -199,11 +212,12 @@ public class User {
         private String fatherName;
         private Gender gender;
         private boolean confirmed;
-        private Path pathToPhoto;
+        private String pathToPhoto;
+        private Role role;
 
         public Builder() {
             id = 0;
-            passportId = 0;
+            passportId = "";
             birth = LocalDate.now();
             login = "";
             password = "";
@@ -213,7 +227,8 @@ public class User {
             fatherName = "";
             gender = Gender.MALE;
             confirmed = false;
-            pathToPhoto = Path.of("");
+            pathToPhoto = "";
+            role = Role.USER;
 
         }
 
@@ -222,7 +237,7 @@ public class User {
             return this;
         }
 
-        public Builder setPassportId(int passportId) {
+        public Builder setPassportId(String passportId) {
             this.passportId = passportId;
             return this;
         }
@@ -238,6 +253,7 @@ public class User {
         }
 
         public Builder setPassword(String password) {
+
             this.password = password;
             return this;
         }
@@ -272,13 +288,30 @@ public class User {
             return this;
         }
 
-        public Builder setPathToPhoto(Path pathToPhoto) {
+        public Builder setPathToPhoto(String pathToPhoto) {
             this.pathToPhoto = pathToPhoto;
             return this;
         }
 
-        public User build() {
-            return new User(id, passportId, birth, login, password, email, firstName, surname, fatherName, gender, confirmed, pathToPhoto);
+        public Builder setRole(Role role) {
+            this.role = role;
+            return this;
         }
+
+        public User build() {
+            return new User(id, passportId, birth, login, password, email, firstName, surname, fatherName, gender, confirmed, pathToPhoto,role);
+        }
+    }
+
+    public static String generateHashMd5(String password) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("MD5");
+
+        byte[] passwordDigest = digest.digest(password.getBytes());
+        StringBuilder stringBuilder = new StringBuilder();
+        for (byte b : passwordDigest) {
+            stringBuilder.append(Integer.toHexString(0xff & b));
+
+        }
+        return stringBuilder.toString();
     }
 }

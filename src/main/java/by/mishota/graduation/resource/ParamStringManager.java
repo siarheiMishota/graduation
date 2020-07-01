@@ -8,4 +8,6 @@ public class ParamStringManager {
    public static final String MESSAGE_LOGIN_ERROR = "message.loginError";
    public static final String PATH_PAGE_MAIN = "path.page.main";
    public static final String PATH_PAGE_LOGIN = "path.page.login";
+   public static final String PATH_PAGE_SIGN_UP = "path.page.signUp";
+   public static final String PATH_PAGE_SIGN_UP_SUCCESSFULLY = "path.page.signUpSuccessfully";
 }

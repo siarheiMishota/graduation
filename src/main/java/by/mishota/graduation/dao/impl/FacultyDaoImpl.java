@@ -73,9 +73,9 @@ public class FacultyDaoImpl implements FacultyDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DaoException(ERROR_GETTING_RESULT, e);
+            throw new DaoException("Error getting result", e);
         } catch (ConnectionPoolException e) {
-            throw new DaoException(ERROR_GETTING_CONNECTION, e);
+            throw new DaoException("Error getting connection", e);
         } finally {
             close(connection, statement, resultSet);
         }

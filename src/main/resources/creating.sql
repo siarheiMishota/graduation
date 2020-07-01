@@ -1,10 +1,10 @@
 create table users
 (
     id          int auto_increment,
-    passport_id int                     not null,
+    passport_id varchar(20)                     not null,
     date_birth  date                    not null,
     login       varchar(25)             not null,
-    password    varchar(30)             not null,
+    password    varchar(100)             not null,
     email       varchar(40)             not null,
     first_name  varchar(25)             not null,
     surname     varchar(25)             not null,
@@ -18,7 +18,9 @@ create table users
     constraint email
         unique (email),
     constraint login
-        unique (login)
+        unique (login),
+    constraint login
+        unique (passport_id)
 );
 
 create table entrants
@@ -103,7 +105,7 @@ insert into users(passport_id, date_birth, login, password, email, first_name, s
     value (659, '1996-05-08', 'mishota', 'solo', 'soloyoloswag1@yandex.ru', 'Мишота', 'Сергей', 'Александрович', 'male',
            true, 'admin');
 
-insert into users(passport_id, date_birth, login, password, email, first_name, surname, father_name, gender, confirmed)
+insert into users(passport_id, date_birth, login, password, email, surname, first_name, father_name, gender, confirmed)
 values (530, '1961-11-06', 'kryazev', 'passwordkryazev', 'kryazev@gmail.com', 'Кряжев', 'Олег', 'Викторович', 'male',
         true),
        (510, '1961-02-08', 'uzefovich', 'uzefovichPassword', 'uzefovich@gmail.com', 'Юзефович', 'Сергей',
@@ -176,22 +178,22 @@ values ('ФИТР', 5, 5),
 ;
 
 insert into students (user_id, faculty_id, budget)
-values (1,43,true),
-       (2,44,true),
-       (3,45,false),
-       (4,46,false),
-       (5,47,true),
-       (6,48,false),
-       (7,49,true),
-       (8,50,false),
-       (9,51,false),
-       (10,52,true)
+values (1, 43, true),
+       (2, 44, true),
+       (3, 45, false),
+       (4, 46, false),
+       (5, 47, true),
+       (6, 48, false),
+       (7, 49, true),
+       (8, 50, false),
+       (9, 51, false),
+       (10, 52, true)
 ;
 
 insert into subjects_to_faculties (faculties_id, subject_id)
-values (43,1),
-       (43,2),
-       (43,3),
-       (44,4),
-       (44,3),
-       (44,2);
+values (43, 1),
+       (43, 2),
+       (43, 3),
+       (44, 4),
+       (44, 3),
+       (44, 2);

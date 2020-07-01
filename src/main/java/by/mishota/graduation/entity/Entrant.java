@@ -8,10 +8,10 @@ public class Entrant {
     private int id;
     private User user;
     private int certificate;
-    private List<SubjectResult> results;
-    private Map<Integer, Faculty> priority;
+    private Map<Integer,Integer> results;
+    private Map<Integer, Integer> priority;
 
-    public Entrant(User user, int certificate, List<SubjectResult> results, Map<Integer, Faculty> priority) {
+    public Entrant(User user, int certificate, Map<Integer,Integer> results, Map<Integer, Integer> priority) {
         this.user = user;
         this.certificate = certificate;
         this.results = results;
@@ -42,19 +42,19 @@ public class Entrant {
         this.certificate = certificate;
     }
 
-    public List<SubjectResult> getResults() {
+    public Map<Integer, Integer> getResults() {
         return results;
     }
 
-    public void setResults(List<SubjectResult> results) {
+    public void setResults(Map<Integer,Integer> results) {
         this.results = results;
     }
 
-    public Map<Integer, Faculty> getPriority() {
+    public Map<Integer, Integer> getPriority() {
         return priority;
     }
 
-    public void setPriority(Map<Integer, Faculty> priority) {
+    public void setPriority(Map<Integer, Integer> priority) {
         this.priority = priority;
     }
 

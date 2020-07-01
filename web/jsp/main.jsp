@@ -9,7 +9,7 @@
 <h2>${login}, hello</h2>
 <h2>${role}, hello</h2>
 <hr/>
-<a href="controller?command=logout">logout</a>
+<a href="controller?command=logout" >logout</a>
 
 
 </body>

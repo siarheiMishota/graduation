@@ -6,7 +6,6 @@ import by.mishota.graduation.exception.ServiceException;
 import by.mishota.graduation.resource.ConfigurationManager;
 import by.mishota.graduation.resource.MessageManager;
 import by.mishota.graduation.service.UserService;
-import com.mysql.cj.log.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,11 +17,11 @@ public class LoginCommand implements ActionCommand {
     private static final String PARAM_NAME_LOGIN = "login";
     private static final String PARAM_NAME_PASSWORD = "password";
     private static final String ERROR_LOGIN_PASS_MESSAGE = "errorLoginPassMessage";
-    public static final String INTERNAL_SERVER_ERROR = "InternalServerError";
-    public static final String SERVER_IS_TEMPORARILY_UNAVAILABLE = "Server is temporarily unavailable";
-    public static final String ATTRIBUTE_LOGIN = "login";
-    public static final String CHECK_USER_IS_ERROR = "Check user is error";
-    public static final String ATTRIBUTE_ROLE = "role";
+    private static final String INTERNAL_SERVER_ERROR = "InternalServerError";
+    private static final String SERVER_IS_TEMPORARILY_UNAVAILABLE = "Server is temporarily unavailable";
+    private static final String ATTRIBUTE_LOGIN = "login";
+    private static final String CHECK_USER_IS_ERROR = "Check user is error";
+    private static final String ATTRIBUTE_ROLE = "role";
 
     private static Logger logger=LogManager.getLogger();
 
@@ -35,16 +34,15 @@ public class LoginCommand implements ActionCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
-        String page = ConfigurationManager.getProperty(PATH_PAGE_LOGIN);
+    public String execute(HttpServletRequest request) {String page = ConfigurationManager.getProperty(PATH_PAGE_LOGIN);
 
         String login = request.getParameter(PARAM_NAME_LOGIN);
         String password = request.getParameter(PARAM_NAME_PASSWORD);
         try {
-            if (userService.checkUser(login, password)) {
+            if (userService.checkSignIn(login, password)) {
                 request.setAttribute(ATTRIBUTE_LOGIN, login);
 
-                if (userService.checkAdmin(login, password)) {
+                if (userService.checkRole(login, password)) {
                     request.setAttribute(ATTRIBUTE_ROLE, Role.ADMIN);
                 } else {
                     request.setAttribute(ATTRIBUTE_ROLE, Role.USER);
@@ -60,5 +58,6 @@ public class LoginCommand implements ActionCommand {
 
         }
         return page;
+
     }
 }
