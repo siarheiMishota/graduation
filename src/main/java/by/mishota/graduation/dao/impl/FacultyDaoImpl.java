@@ -1,6 +1,7 @@
 package by.mishota.graduation.dao.impl;
 
 import by.mishota.graduation.dao.FacultyDao;
+import by.mishota.graduation.dao.StudentDao;
 import by.mishota.graduation.dao.SubjectDao;
 import by.mishota.graduation.dao.pool.ConnectionPool;
 import by.mishota.graduation.entity.Faculty;
@@ -55,7 +56,7 @@ public class FacultyDaoImpl implements FacultyDao {
     }
 
 
-    private List<Faculty> findFaculties(String sqlRequest) throws DaoException {//TODO
+    private List<Faculty> findFaculties(String sqlRequest) throws DaoException {
         ConnectionPool pool;
         Connection connection = null;
         Statement statement = null;
@@ -72,7 +73,6 @@ public class FacultyDaoImpl implements FacultyDao {
                 faculties.add(faculty);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new DaoException("Error getting result", e);
         } catch (ConnectionPoolException e) {
             throw new DaoException("Error getting connection", e);
@@ -82,7 +82,7 @@ public class FacultyDaoImpl implements FacultyDao {
         return faculties;
     }
 
-    private Faculty parseFaculty(ResultSet resultSet) throws SQLException, DaoException {//TODO
+    private Faculty parseFaculty(ResultSet resultSet) throws SQLException, DaoException {
 
         Faculty faculty = new Faculty();
         int facultyId = resultSet.getInt(PARAM_SUBJECT_ID);
@@ -93,9 +93,12 @@ public class FacultyDaoImpl implements FacultyDao {
         faculty.setNumberPayPlaces(resultSet.getInt(PARAM_FACULTY_NUMBER_PAY_PLACES));
 
         SubjectDao subjectDao = new SubjectDaoImpl();
-        List<Subject> needSubjectsForFaculty = subjectDao.findAllByFacultyId(facultyId);
-        faculty.setNeedSubjects(needSubjectsForFaculty);
+        List<Integer> needIdSubjectsForFaculty = subjectDao.findAllIdByFacultyId(facultyId);
+        faculty.setIdNeedSubjects(needIdSubjectsForFaculty);
 
+        StudentDao studentDao=new StudentDaoImpl();
+        List<Integer> idStudents=studentDao.findAllIdByFacultyId(facultyId);
+        faculty.setIdStudents(idStudents);
         return faculty;
     }
 

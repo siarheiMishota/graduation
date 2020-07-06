@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static by.mishota.graduation.dao.ParamStringDao.*;
-
 public class SubjectDaoImpl implements SubjectDao {
 
     private static final int DUPLICATE_ENTRY_ERROR_CODE = 1062;
@@ -81,6 +79,34 @@ public class SubjectDaoImpl implements SubjectDao {
 
     }
 
+    @Override
+    public List<Integer> findAllIdByFacultyId(int facultyId) throws DaoException {
+        return findIdSubjects(SELECT_FIND_ALL_BY_FACULTY + facultyId);
+
+    }
+
+    private List<Integer> findIdSubjects(String sqlRequest) throws DaoException {
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        List<Integer> subjects = new ArrayList<>();
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sqlRequest);
+
+            while (resultSet.next()) {
+                subjects.add(resultSet.getInt(ParamStringDao.PARAM_STUDENT_ID));
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error getting result", e);
+        } catch (ConnectionPoolException e) {
+            throw new DaoException("Error getting connection", e);
+        } finally {
+            close(connection, statement, resultSet);
+        }
+        return subjects;
+    }
 
     private List<Subject> findSubjects(String sqlRequest) throws DaoException {
         Connection connection = null;

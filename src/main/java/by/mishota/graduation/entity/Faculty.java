@@ -1,6 +1,5 @@
 package by.mishota.graduation.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Faculty {
@@ -9,8 +8,8 @@ public class Faculty {
     private String name;
     private int numberFreePlaces;
     private int numberPayPlaces;
-    private List<Student> students;
-    private List<Subject> needSubjects;
+    private List<Integer> idStudents;
+    private List<Integer> idNeedSubjects;
 
     public Faculty() {
     }
@@ -47,20 +46,20 @@ public class Faculty {
         this.numberPayPlaces = numberPayPlaces;
     }
 
-    public List<Student> getStudents() {
-        return students;
+    public List<Integer> getIdStudents() {
+        return idStudents;
     }
 
-    public void setStudents(List<Student> students) {
-        this.students = students;
+    public void setIdStudents(List<Integer> idStudents) {
+        this.idStudents = idStudents;
     }
 
-    public List<Subject> getNeedSubjects() {
-        return needSubjects;
+    public List<Integer> getIdNeedSubjects() {
+        return idNeedSubjects;
     }
 
-    public void setNeedSubjects(List<Subject> needSubjects) {
-        this.needSubjects = needSubjects;
+    public void setIdNeedSubjects(List<Integer> idNeedSubjects) {
+        this.idNeedSubjects = idNeedSubjects;
     }
 
     @Override
@@ -74,8 +73,8 @@ public class Faculty {
         if (numberFreePlaces != faculty.numberFreePlaces) return false;
         if (numberPayPlaces != faculty.numberPayPlaces) return false;
         if (name != null ? !name.equals(faculty.name) : faculty.name != null) return false;
-        if (students != null ? !students.equals(faculty.students) : faculty.students != null) return false;
-        return needSubjects != null ? needSubjects.equals(faculty.needSubjects) : faculty.needSubjects == null;
+        if (idStudents != null ? !idStudents.equals(faculty.idStudents) : faculty.idStudents != null) return false;
+        return idNeedSubjects != null ? idNeedSubjects.equals(faculty.idNeedSubjects) : faculty.idNeedSubjects == null;
     }
 
     @Override
@@ -84,8 +83,8 @@ public class Faculty {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + numberFreePlaces;
         result = 31 * result + numberPayPlaces;
-        result = 31 * result + (students != null ? students.hashCode() : 0);
-        result = 31 * result + (needSubjects != null ? needSubjects.hashCode() : 0);
+        result = 31 * result + (idStudents != null ? idStudents.hashCode() : 0);
+        result = 31 * result + (idNeedSubjects != null ? idNeedSubjects.hashCode() : 0);
         return result;
     }
 
@@ -95,7 +94,7 @@ public class Faculty {
         StringBuilder builder = new StringBuilder();
         builder.append("Faculty( ").append(id).append(", ").append(name).append(", free places= ")
                 .append(numberFreePlaces).append(", pay places= ").append(numberPayPlaces).append(", ")
-                .append(needSubjects).append(", ").append(students).append(")");
+                .append(idNeedSubjects).append(", ").append(idStudents).append(")");
 
         return builder.toString();
     }

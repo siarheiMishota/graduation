@@ -16,4 +16,6 @@ public interface FacultyDao extends Dao {
 
     List<Faculty> findWhereFreePlacesLessSpecify(int specifyPlaces) throws DaoException;
 
+//    Optional<Faculty> add(Faculty faculty) throws  DaoException;
+
 }

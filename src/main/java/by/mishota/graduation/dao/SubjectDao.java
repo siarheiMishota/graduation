@@ -15,4 +15,5 @@ public interface SubjectDao extends Dao {
     List<Subject > findAllByFacultyId(int facultyId) throws DaoException;
 
 
+    List<Integer> findAllIdByFacultyId(int facultyId) throws DaoException;
 }

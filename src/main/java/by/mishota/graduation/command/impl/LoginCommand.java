@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import static by.mishota.graduation.resource.ParamStringManager.*;
 
@@ -23,8 +24,7 @@ public class LoginCommand implements ActionCommand {
     private static final String CHECK_USER_IS_ERROR = "Check user is error";
     private static final String ATTRIBUTE_ROLE = "role";
 
-    private static Logger logger=LogManager.getLogger();
-
+    private static Logger logger = LogManager.getLogger();
 
 
     private UserService userService;
@@ -34,20 +34,18 @@ public class LoginCommand implements ActionCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {String page = ConfigurationManager.getProperty(PATH_PAGE_LOGIN);
+    public String execute(HttpServletRequest request) {
+        String page = ConfigurationManager.getProperty(PATH_PAGE_LOGIN);
 
         String login = request.getParameter(PARAM_NAME_LOGIN);
         String password = request.getParameter(PARAM_NAME_PASSWORD);
+        HttpSession session = request.getSession();
         try {
             if (userService.checkSignIn(login, password)) {
+                Role role = userService.checkRole(login, password);
                 request.setAttribute(ATTRIBUTE_LOGIN, login);
-
-                if (userService.checkRole(login, password)) {
-                    request.setAttribute(ATTRIBUTE_ROLE, Role.ADMIN);
-                } else {
-                    request.setAttribute(ATTRIBUTE_ROLE, Role.USER);
-                }
-
+                request.setAttribute(ATTRIBUTE_ROLE, role);
+                session.setAttribute(ATTRIBUTE_ROLE, role);
                 page = ConfigurationManager.getProperty(PATH_PAGE_MAIN);
             } else {
                 request.setAttribute(ERROR_LOGIN_PASS_MESSAGE, MessageManager.getProperty(MESSAGE_LOGIN_ERROR));

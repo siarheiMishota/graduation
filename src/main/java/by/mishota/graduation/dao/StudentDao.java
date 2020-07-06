@@ -10,6 +10,9 @@ public interface StudentDao extends Dao{
 
     List<Student> findAll()throws DaoException;
     List<Student> findAllByFacultyId(int facultyId)throws DaoException;
+
+    List<Integer> findAllIdByFacultyId(int facultyId) throws DaoException;
+
     List<Student> findByFree()throws DaoException;
     List<Student> findAllPayer() throws DaoException;
     List<Student> findAllFemale() throws DaoException;

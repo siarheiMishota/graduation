@@ -20,7 +20,7 @@ public class User {
     private Role role;
 
     private User(int id, String passportId, LocalDate birth, String login, String password, String email, String firstName,
-                 String surname, String fatherName, Gender gender, boolean confirmed, String photo,Role role) {
+                 String surname, String fatherName, Gender gender, boolean confirmed, String photo, Role role) {
         this.id = id;
         this.passportId = passportId;
         this.birth = birth;
@@ -299,7 +299,7 @@ public class User {
         }
 
         public User build() {
-            return new User(id, passportId, birth, login, password, email, firstName, surname, fatherName, gender, confirmed, pathToPhoto,role);
+            return new User(id, passportId, birth, login, password, email, firstName, surname, fatherName, gender, confirmed, pathToPhoto, role);
         }
     }
 

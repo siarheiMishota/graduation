@@ -9,10 +9,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @WebServlet("/upload/*")
@@ -42,6 +44,9 @@ public class UploadController extends HttpServlet {
 //            System.out.println("Photo isn't uploaded");
 //            req.setAttribute("upload_result","upload failed");
 //        }
+
+        Collection<Part> parts = req.getParts();
+        System.out.println(parts);
 
         req.getParts().forEach(part -> {
             try {

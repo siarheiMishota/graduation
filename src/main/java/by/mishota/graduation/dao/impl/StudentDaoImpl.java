@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static by.mishota.graduation.dao.ParamStringDao.PARAM_STUDENT_ID;
+
 
 public class StudentDaoImpl implements StudentDao {
 
@@ -43,6 +45,34 @@ public class StudentDaoImpl implements StudentDao {
     public List<Student> findAllByFacultyId(int facultyId) throws DaoException {
         return findStudents(SELECT_ALL_BY_FACULTY_ID + facultyId);
 
+    }
+
+    @Override
+    public List<Integer> findAllIdByFacultyId(int facultyId) throws DaoException {
+        return findIdStudents(SELECT_ALL_BY_FACULTY_ID + facultyId);
+    }
+
+    private List<Integer> findIdStudents(String sqlRequest) throws DaoException {
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        List<Integer> idStudents = new ArrayList<>();
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sqlRequest);
+
+            while (resultSet.next()) {
+                idStudents.add(resultSet.getInt(PARAM_STUDENT_ID));
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error getting result", e);
+        } catch (ConnectionPoolException e) {
+            throw new DaoException("Error getting connection", e);
+        } finally {
+            close(connection, statement, resultSet);
+        }
+        return idStudents;
     }
 
     @Override
@@ -104,7 +134,7 @@ public class StudentDaoImpl implements StudentDao {
     private Student parseStudent(ResultSet resultSet) throws SQLException, DaoException {
 
         Student student = new Student();
-        student.setId(resultSet.getInt(ParamStringDao.PARAM_STUDENT_ID));
+        student.setId(resultSet.getInt(PARAM_STUDENT_ID));
         student.setBudget(resultSet.getBoolean(PARAM_BUDGET));
         student.setIdFaculty(resultSet.getInt(ParamStringDao.PARAM_STUDENT_FACULTY_ID));
 
