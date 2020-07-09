@@ -38,4 +38,22 @@ public interface Dao {
             }
         }
     }
+    default void close(Connection connection, Statement statement) {
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                logger.warn("Statement isn't  closed", e);
+
+            }
+        }
+
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                logger.warn("Connection isn't closed", e);
+            }
+        }
+    }
 }

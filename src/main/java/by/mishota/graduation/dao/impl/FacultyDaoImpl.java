@@ -5,7 +5,6 @@ import by.mishota.graduation.dao.StudentDao;
 import by.mishota.graduation.dao.SubjectDao;
 import by.mishota.graduation.dao.pool.ConnectionPool;
 import by.mishota.graduation.entity.Faculty;
-import by.mishota.graduation.entity.Subject;
 import by.mishota.graduation.exception.ConnectionPoolException;
 import by.mishota.graduation.exception.DaoException;
 
@@ -17,15 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static by.mishota.graduation.dao.ParamStringDao.*;
+import static by.mishota.graduation.dao.SqlColumnName.*;
+import static by.mishota.graduation.dao.SqlQueryFacultyDao.*;
 
 public class FacultyDaoImpl implements FacultyDao {
 
     private static final int DUPLICATE_ENTRY_ERROR_CODE = 1062;
-    public static final String SELECT_ALL = "select id, name, number_pay_places, number_free_places from faculties";
-    public static final String SELECT_BY_ID = "select id, name, number_pay_places, number_free_places from faculties where id=";
-    public static final String SELECT_WHERE_FREE_PLACES_MORE_SPECIFY = "select id, name, number_pay_places, number_free_places from faculties where number_free_places>";
-    public static final String SELECT_WHERE_FREE_PLACES_LESS_SPECIFY = "select id, name, number_pay_places, number_free_places from faculties where number_free_places<";
+
 
     @Override
     public List<Faculty> findAll() throws DaoException {
@@ -85,19 +82,19 @@ public class FacultyDaoImpl implements FacultyDao {
     private Faculty parseFaculty(ResultSet resultSet) throws SQLException, DaoException {
 
         Faculty faculty = new Faculty();
-        int facultyId = resultSet.getInt(PARAM_SUBJECT_ID);
+        int facultyId = resultSet.getInt(FACULTY_ID_COLUMN_NAME);
 
         faculty.setId(facultyId);
-        faculty.setName(resultSet.getString(PARAM_FACULTY_NAME));
-        faculty.setNumberFreePlaces(resultSet.getInt(PARAM_FACULTY_NUMBER_FREE_PLACES));
-        faculty.setNumberPayPlaces(resultSet.getInt(PARAM_FACULTY_NUMBER_PAY_PLACES));
+        faculty.setName(resultSet.getString(FACULTY_NAME_COLUMN_NAME));
+        faculty.setNumberFreePlaces(resultSet.getInt(FACULTY_NUMBER_FREE_PLACES_COLUMN_NAME));
+        faculty.setNumberPayPlaces(resultSet.getInt(FACULTY_NUMBER_PAY_PLACES_COLUMN_NAME));
 
         SubjectDao subjectDao = new SubjectDaoImpl();
         List<Integer> needIdSubjectsForFaculty = subjectDao.findAllIdByFacultyId(facultyId);
         faculty.setIdNeedSubjects(needIdSubjectsForFaculty);
 
-        StudentDao studentDao=new StudentDaoImpl();
-        List<Integer> idStudents=studentDao.findAllIdByFacultyId(facultyId);
+        StudentDao studentDao = new StudentDaoImpl();
+        List<Integer> idStudents = studentDao.findAllIdByFacultyId(facultyId);
         faculty.setIdStudents(idStudents);
         return faculty;
     }

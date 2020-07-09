@@ -2,7 +2,7 @@ package by.mishota.graduation.resource;
 
 import java.util.ResourceBundle;
 
-import static by.mishota.graduation.resource.ParamStringManager.*;
+import static by.mishota.graduation.resource.PagePath.*;
 
 public class ConfigurationManager {
 

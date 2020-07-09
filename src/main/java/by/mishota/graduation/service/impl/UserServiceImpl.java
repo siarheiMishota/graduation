@@ -6,7 +6,9 @@ import by.mishota.graduation.entity.Gender;
 import by.mishota.graduation.entity.Role;
 import by.mishota.graduation.entity.User;
 import by.mishota.graduation.exception.DaoException;
+import by.mishota.graduation.exception.MailException;
 import by.mishota.graduation.exception.ServiceException;
+import by.mishota.graduation.mail.MailSender;
 import by.mishota.graduation.service.ParamStringService;
 import by.mishota.graduation.service.UserService;
 import by.mishota.graduation.validation.Validator;
@@ -15,11 +17,17 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
-import static by.mishota.graduation.dao.ParamStringDao.CANNOT_INSERT_DUPLICATE_USER;
-import static by.mishota.graduation.entity.User.generateHashMd5;
+import static by.mishota.graduation.util.Md5.generateHashMd5;
 
 public class UserServiceImpl implements UserService {
+
+    private MailSender mailSender;
+
+    public UserServiceImpl() {
+        mailSender = new MailSender();
+    }
 
     @Override
     public boolean checkSignIn(String login, String password) throws ServiceException {
@@ -43,8 +51,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Role checkRole(String login, String password) throws ServiceException {
 
-        if (login==null||password==null){
-          return Role.GUEST;
+        if (login == null || password == null) {
+            return Role.GUEST;
         }
 
         UserDao userDao = new UserDaoImpl();
@@ -52,9 +60,9 @@ public class UserServiceImpl implements UserService {
             Optional<User> foundUser = userDao.findByLogin(login);
             if (foundUser.isPresent()) {
                 String s = generateHashMd5(password);
-                 if (foundUser.get().getPassword().equals(s)){
-                     return foundUser.get().getRole();
-                 }
+                if (foundUser.get().getPassword().equals(s)) {
+                    return foundUser.get().getRole();
+                }
             }
         } catch (DaoException e) {
             throw new ServiceException(ParamStringService.ERROR_GETTING_THE_USER, e);
@@ -95,15 +103,52 @@ public class UserServiceImpl implements UserService {
     public Optional<User> add(User user) throws ServiceException {
         Optional<User> added;
         try {
+
+            user.setActivationCode(UUID.randomUUID().toString());
+
             added = new UserDaoImpl().add(user);
-        } catch (DaoException e) {
-            if (CANNOT_INSERT_DUPLICATE_USER.equalsIgnoreCase(e.getMessage())) {
+
+            if (added.isPresent()) {
+
+                String message = String.format("Hello, %s!\n" +
+                                "Welcome to  admission committee. Please, visit next link:\n\n " +
+                                "<a href=\"http://localhost:8080/controller?command=activation&activationCode=%s\"> Activation code</a> ",
+                        added.get().getLogin(),
+                        added.get().getActivationCode());
+                mailSender.sendConfirmationLink(user.getEmail(), "Activation code", message);
+            }
+        } catch (DaoException | MailException e) {
+            if ("Cannot insert a duplicate user ".equalsIgnoreCase(e.getMessage())) {
                 return Optional.empty();
             }
+
             throw new ServiceException(e);
         }
         return added;
     }
+
+    @Override
+    public boolean confirmEmail(String activationCode) throws ServiceException {
+        UserDao dao=new UserDaoImpl();
+        int updatedRows;
+        try {
+            Optional<User> userByActivationCode = dao.findByActivationCode(activationCode);
+
+            if (userByActivationCode.isEmpty()){
+                return false;
+            }
+
+            userByActivationCode.get().setActivationCode(null);
+            userByActivationCode.get().setConfirmed(true);
+
+            updatedRows = dao.update(userByActivationCode.get());
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
+
+        return updatedRows==1;
+    }
+
 
     private static boolean validateUniqueLoginBd(String login) throws ServiceException {
         UserDao userDao = new UserDaoImpl();
@@ -146,7 +191,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public static void main(String[] args) throws ServiceException {
+    public static void main(String[] args) throws ServiceException {//todo
         UserService userService = new UserServiceImpl();
         User.Builder builder = new User.Builder();
 
@@ -155,7 +200,7 @@ public class UserServiceImpl implements UserService {
         builder.setBirth(LocalDate.now());
         builder.setLogin("ser");
         builder.setPassword("1234");
-        builder.setEmail("serg@gmail.com");
+        builder.setEmail("soloyoloswag1@mail.ru");
         builder.setFirstName("Siarhei");
         builder.setSurname("Misho");
         builder.setFatherName("Aleksandrovich");
@@ -166,6 +211,6 @@ public class UserServiceImpl implements UserService {
         User user = builder.build();
         Optional<User> add = userService.add(user);
 
-        System.out.println(add.get());
+//        System.out.println(add.get());
     }
 }

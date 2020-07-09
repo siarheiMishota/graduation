@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import static by.mishota.graduation.entity.User.generateHashMd5;
+import static by.mishota.graduation.util.Md5.generateHashMd5;
 
 public class Validator {
     public static final String PARAM_ATTRIBUTE_GENDER = "gender";
@@ -92,7 +92,6 @@ public class Validator {
 
 
     }
-
 
 
     private static boolean validateComplexPassword(String password) {

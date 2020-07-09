@@ -9,42 +9,40 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ConnectionPool {
     private static final String PATH_DATABASE_PROPERTIES = "prop/database.properties"; //todo
-    public static final String CAN_T_RETURN_THE_CONNECTION_TO_THE_POOL = "Can't return the connection to the pool that is not from the pool";
-    public static final String CLOSING_CONNECTION_WAS_INTERRUPTED = "Closing connection was interrupted";
-    public static final String FAILED_TO_INITIALIZE = "Failed to initialize the pool connection where not all connection are created";
-    public static final String ERROR_READING_CONFIGURATION = "Error reading configuration file";
-    public static final String FILE_FOR_CONFIGURATION_ISN_T_FOUND = "File database.properties for configuration isn't found";
-    public static final String CONNECTION_POOL_ISN_T_INITIALIZED = "Connection pool isn't initialized";
-    public static final String PARAM_URL = "url";
-    public static final String CONNECTION_ISN_T_CLOSED = "Connection isn't closed";
-    public static final String PARAM_DRIVER = "driver";
+    private static final String PARAM_URL = "url";
+    private static final String PARAM_DRIVER = "driver";
 
     private static final int DEFAULT_POOL_SIZE = 12;
     private static ConnectionPool instance;
     private static Logger logger = LogManager.getLogger();
     private static boolean poolClosed = false;
     private static Lock lock = new ReentrantLock();
-
+    private static AtomicBoolean atomicBoolean = new AtomicBoolean(false);
 
     private BlockingQueue<ProxyConnection> freeConnections;
     private Set<ProxyConnection> busyConnections;
+    private int poolSize;
 
     public static ConnectionPool getInstance() throws ConnectionPoolException {
 
-        if (instance == null) {
+        if (!atomicBoolean.get()) {
             try {
                 lock.lock();
 
                 if (instance == null) {
                     instance = new ConnectionPool();
+                    atomicBoolean.set(true);
                 }
             } finally {
                 lock.unlock();
@@ -57,9 +55,7 @@ public class ConnectionPool {
         return instance;
     }
 
-
     private ConnectionPool() throws ConnectionPoolException {
-        freeConnections = new ArrayBlockingQueue<>(DEFAULT_POOL_SIZE, true);
         busyConnections = new HashSet<>();
         Properties properties = new Properties();
 
@@ -68,24 +64,39 @@ public class ConnectionPool {
 
             properties.load(is);
             String url = properties.getProperty(PARAM_URL);
+            String stringPoolSize = properties.getProperty("pool.size");
+
+            if (stringPoolSize == null) {
+                poolSize = DEFAULT_POOL_SIZE;
+            } else {
+                try {
+                    poolSize = Integer.parseInt(stringPoolSize);
+                } catch (NumberFormatException e) {
+                    poolSize = DEFAULT_POOL_SIZE;
+                    logger.warn("Pool size in property field is incorrect, check your property field", e);
+                }
+            }
+
+            freeConnections = new ArrayBlockingQueue<>(poolSize, true);
             Class.forName(properties.getProperty(PARAM_DRIVER));
-            for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
+
+            for (int i = 0; i < poolSize; i++) {
                 freeConnections.put(new ProxyConnection(DriverManager.getConnection(url, properties)));
             }
 
         } catch (SQLException | InterruptedException | IOException | ClassNotFoundException e) {
-            throw new ConnectionPoolException(CONNECTION_POOL_ISN_T_INITIALIZED, e);
+            throw new ConnectionPoolException("Connection pool isn't initialized", e);
         }
 
-        if (freeConnections.size() != DEFAULT_POOL_SIZE) {
-            throw new ExceptionInInitializerError(FAILED_TO_INITIALIZE);
+        if (freeConnections.size() != poolSize) {
+            throw new ExceptionInInitializerError("Failed to initialize the pool connection where not all connection are created");
         }
 
     }
 
 
     public int getPoolSize() {
-        return DEFAULT_POOL_SIZE;
+        return poolSize;
     }
 
     public Connection getConnection() throws ConnectionPoolException {
@@ -106,16 +117,16 @@ public class ConnectionPool {
     public void releaseConnection(Connection connection) throws ConnectionPoolException {
 
         try {
-            if (connection instanceof by.mishota.graduation.dao.pool.ProxyConnection) {
+            if (connection instanceof ProxyConnection) {
                 if (busyConnections.contains(connection)) {
-                    freeConnections.put((by.mishota.graduation.dao.pool.ProxyConnection) connection);
+                    freeConnections.put((ProxyConnection) connection);
                     busyConnections.remove(connection);
                 }
             } else {
-                throw new ConnectionPoolException(CAN_T_RETURN_THE_CONNECTION_TO_THE_POOL);
+                throw new ConnectionPoolException("Can't return the connection to the pool that is not from the pool");
             }
         } catch (InterruptedException e) {
-            throw new ConnectionPoolException(CLOSING_CONNECTION_WAS_INTERRUPTED, e);
+            throw new ConnectionPoolException("Closing connection was interrupted", e);
         }
 
         if (poolClosed) {
@@ -129,10 +140,18 @@ public class ConnectionPool {
             try {
                 freeConnections.take();
             } catch (InterruptedException e) {
-                logger.warn(CONNECTION_ISN_T_CLOSED);
+                logger.warn("Connection isn't closed");
             }
         }
+
+        if (freeConnections.isEmpty() && busyConnections.isEmpty()) {
+            DriverManager.getDrivers().asIterator().forEachRemaining(driver -> {
+                try {
+                    DriverManager.deregisterDriver(driver);
+                } catch (SQLException e) {
+                    logger.warn("Driver doesn't deregister",e);
+                }
+            });
+        }
     }
-
-
 }

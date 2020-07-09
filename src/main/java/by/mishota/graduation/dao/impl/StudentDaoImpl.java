@@ -17,22 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static by.mishota.graduation.dao.ParamStringDao.PARAM_STUDENT_ID;
+import static by.mishota.graduation.dao.SqlColumnName.*;
+import static by.mishota.graduation.dao.SqlQueryStudentDao.*;
 
 
 public class StudentDaoImpl implements StudentDao {
 
     private static final int DUPLICATE_ENTRY_ERROR_CODE = 1062;
-    public static final String USER_N_T_FOUND_FOR_STUDENT = "User isn't found for student";
 
-    private static final String SELECT_ALL = "SELECT id,user_id, faculty_id, budget FROM students ";
-    private static final String SELECT_ALL_MALE = "select students.id,user_id, faculty_id, budget from students join users u on students.user_id = u.id where gender='male'";
-    private static final String SELECT_ALL_FEMALE = "select students.id,user_id, faculty_id, budget from students join users u on students.user_id = u.id where gender='female'";
-    private static final String SELECT_ALL_PAYER = "select id,user_id, faculty_id, budget from students where budget=false";
-    private static final String SELECT_ALL_FREER = "select id,user_id, faculty_id, budget from students where budget=true";
-    private static final String SELECT_BY_ID = "SELECT id,user_id, faculty_id, budget FROM students where id=";
-    private static final String SELECT_ALL_BY_FACULTY_ID = "select id,user_id, faculty_id, budget from students where faculty_id=";
-    private static final String PARAM_BUDGET = "budget";
+
 
 
     @Override
@@ -63,7 +56,7 @@ public class StudentDaoImpl implements StudentDao {
             resultSet = statement.executeQuery(sqlRequest);
 
             while (resultSet.next()) {
-                idStudents.add(resultSet.getInt(PARAM_STUDENT_ID));
+                idStudents.add(resultSet.getInt(STUDENT_ID_COLUMN_NAME));
             }
         } catch (SQLException e) {
             throw new DaoException("Error getting result", e);
@@ -134,18 +127,18 @@ public class StudentDaoImpl implements StudentDao {
     private Student parseStudent(ResultSet resultSet) throws SQLException, DaoException {
 
         Student student = new Student();
-        student.setId(resultSet.getInt(PARAM_STUDENT_ID));
-        student.setBudget(resultSet.getBoolean(PARAM_BUDGET));
-        student.setIdFaculty(resultSet.getInt(ParamStringDao.PARAM_STUDENT_FACULTY_ID));
+        student.setId(resultSet.getInt(STUDENT_ID_COLUMN_NAME));
+        student.setBudget(resultSet.getBoolean(STUDENT_BUDGET_COLUMN_NAME));
+        student.setIdFaculty(resultSet.getInt(STUDENT_FACULTY_ID_COLUMN_NAME));
 
-        int userId = resultSet.getInt(ParamStringDao.PARAM_STUDENT_USER_ID);
+        int userId = resultSet.getInt(STUDENT_USER_ID_COLUMN_NAME);
         UserDao userDao = new UserDaoImpl();
         Optional<User> userOptional = userDao.findById(userId);
 
         if (userOptional.isPresent()) {
             student.setUser(userOptional.get());
         } else {
-            throw new DaoException(USER_N_T_FOUND_FOR_STUDENT);
+            throw new DaoException("User isn't found for student");
         }
 
         return student;

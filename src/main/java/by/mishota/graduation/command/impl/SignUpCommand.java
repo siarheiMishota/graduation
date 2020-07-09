@@ -6,6 +6,7 @@ import by.mishota.graduation.entity.User;
 import by.mishota.graduation.exception.ServiceException;
 import by.mishota.graduation.resource.ConfigurationManager;
 import by.mishota.graduation.service.UserService;
+import by.mishota.graduation.util.Md5;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 
-import static by.mishota.graduation.resource.ParamStringManager.*;
+import static by.mishota.graduation.resource.PagePath.*;
 
 public class SignUpCommand implements ActionCommand {
 
@@ -57,7 +58,7 @@ public class SignUpCommand implements ActionCommand {
 
             LocalDate birth = LocalDate.parse(birthString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             Gender gender = Gender.valueOfIgnoreCase(genderString);
-            String passwordMd5 = User.generateHashMd5(password);
+            String passwordMd5 = Md5.generateHashMd5(password);
 
             User user = new User.Builder()
                     .setLogin(login)

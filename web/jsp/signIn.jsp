@@ -9,6 +9,7 @@
 <body>
 <form name="loginForm" method="post" action="${pageContext.request.contextPath}/controller">
     <input type="hidden" name="command" value="login">
+    ${confirmed}
     <p><fmt:message key="login" bundle="${rb}"/> <input type="text" name="login" value=""/></p>
     <p><fmt:message key="password" bundle="${rb}"/> <input type="password" name="password" value=""/></p>
     ${errorLoginPassMessage} <br/>

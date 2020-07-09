@@ -1,7 +1,5 @@
 package by.mishota.graduation.entity;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 
 public class User {
@@ -18,9 +16,10 @@ public class User {
     private boolean confirmed;
     private String photo;
     private Role role;
+    private String activationCode;
 
     private User(int id, String passportId, LocalDate birth, String login, String password, String email, String firstName,
-                 String surname, String fatherName, Gender gender, boolean confirmed, String photo, Role role) {
+                 String surname, String fatherName, Gender gender, boolean confirmed, String photo, Role role, String activationCode) {
         this.id = id;
         this.passportId = passportId;
         this.birth = birth;
@@ -34,6 +33,15 @@ public class User {
         this.confirmed = confirmed;
         this.photo = photo;
         this.role = role;
+        this.activationCode = activationCode;
+    }
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
     }
 
     public Role getRole() {
@@ -214,6 +222,7 @@ public class User {
         private boolean confirmed;
         private String pathToPhoto;
         private Role role;
+        private String activationCode;
 
         public Builder() {
             id = 0;
@@ -229,6 +238,7 @@ public class User {
             confirmed = false;
             pathToPhoto = "";
             role = Role.USER;
+            activationCode = null;
 
         }
 
@@ -298,20 +308,15 @@ public class User {
             return this;
         }
 
+        public Builder setActivationCode(String activationCode) {
+            this.activationCode = activationCode;
+            return this;
+        }
+
         public User build() {
-            return new User(id, passportId, birth, login, password, email, firstName, surname, fatherName, gender, confirmed, pathToPhoto, role);
+            return new User(id, passportId, birth, login, password, email, firstName, surname, fatherName, gender, confirmed, pathToPhoto, role, activationCode);
         }
     }
 
-    public static String generateHashMd5(String password) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("MD5");
 
-        byte[] passwordDigest = digest.digest(password.getBytes());
-        StringBuilder stringBuilder = new StringBuilder();
-        for (byte b : passwordDigest) {
-            stringBuilder.append(Integer.toHexString(0xff & b));
-
-        }
-        return stringBuilder.toString();
-    }
 }

@@ -13,8 +13,8 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-import static by.mishota.graduation.resource.ParamStringManager.PATH_PAGE_LOGIN;
-import static by.mishota.graduation.resource.ParamStringManager.PATH_PAGE_MAIN;
+import static by.mishota.graduation.resource.PagePath.PATH_PAGE_LOGIN;
+import static by.mishota.graduation.resource.PagePath.PATH_PAGE_MAIN;
 
 public class MainCommand implements ActionCommand {
 

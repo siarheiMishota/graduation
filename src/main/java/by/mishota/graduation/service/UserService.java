@@ -18,4 +18,6 @@ public interface UserService {
                                     String birth, String gender, String namePhoto) throws ServiceException;
 
     Optional<User> add(User user) throws ServiceException;
+
+    boolean confirmEmail(String activationCode) throws ServiceException;
 }

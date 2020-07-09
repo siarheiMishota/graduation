@@ -9,7 +9,6 @@ import java.util.concurrent.Executor;
 
 public class ProxyConnection implements Connection {
 
-    public static final String ERROR_RELEASING_CONNECTION = "Error releasing connection";
 
     private final Connection connection;
 
@@ -62,7 +61,7 @@ public class ProxyConnection implements Connection {
         try {
             ConnectionPool.getInstance().releaseConnection(this);
         } catch (ConnectionPoolException e) {
-            throw new SQLException(ERROR_RELEASING_CONNECTION, e);
+            throw new SQLException("Error releasing connection", e);
         }
 
     }

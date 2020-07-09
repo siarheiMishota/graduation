@@ -1,6 +1,5 @@
 package by.mishota.graduation.dao.impl;
 
-import by.mishota.graduation.dao.ParamStringDao;
 import by.mishota.graduation.dao.SubjectDao;
 import by.mishota.graduation.dao.pool.ConnectionPool;
 import by.mishota.graduation.entity.Subject;
@@ -11,6 +10,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static by.mishota.graduation.dao.SqlColumnName.STUDENT_ID_COLUMN_NAME;
 
 public class SubjectDaoImpl implements SubjectDao {
 
@@ -36,31 +37,25 @@ public class SubjectDaoImpl implements SubjectDao {
             int numberUpdatedLines = statement.executeUpdate();
 
             if (numberUpdatedLines == 1) {
-                try {
-                    generatedKeys = statement.getGeneratedKeys();
-                    if (generatedKeys.next()) {
-                        subject.setId(generatedKeys.getInt(1));
-                    } else {
-                        throw new DaoException("Creating subject failed, no ID obtained.");
-                    }
-                } catch (Exception e) {
-
+                generatedKeys = statement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    subject.setId(generatedKeys.getInt(1));
+                } else {
+                    throw new DaoException("Creating subject failed, no ID obtained.");
                 }
             }
-
-
         } catch (SQLException e) {
 
             if (e.getErrorCode() == DUPLICATE_ENTRY_ERROR_CODE) {
                 throw new DaoException("Cannot insert a duplicate subject ", e);
             }
-            System.out.println(e.getErrorCode());
             throw new DaoException("Error connecting to database", e);
         } catch (ConnectionPoolException e) {
             throw new DaoException("Error getting connection", e);
         } finally {
             close(connection, statement, generatedKeys);
         }
+
     }
 
     @Override
@@ -96,7 +91,7 @@ public class SubjectDaoImpl implements SubjectDao {
             resultSet = statement.executeQuery(sqlRequest);
 
             while (resultSet.next()) {
-                subjects.add(resultSet.getInt(ParamStringDao.PARAM_STUDENT_ID));
+                subjects.add(resultSet.getInt(STUDENT_ID_COLUMN_NAME));
             }
         } catch (SQLException e) {
             throw new DaoException("Error getting result", e);
@@ -135,7 +130,7 @@ public class SubjectDaoImpl implements SubjectDao {
     private Subject parseSubject(ResultSet resultSet) throws SQLException {
 
         Subject subject = new Subject();
-        subject.setId(resultSet.getInt(ParamStringDao.PARAM_STUDENT_ID));
+        subject.setId(resultSet.getInt(STUDENT_ID_COLUMN_NAME));
         subject.setName(resultSet.getString(PARAM_NAME));
 
         return subject;

@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import static by.mishota.graduation.resource.ParamStringManager.*;
+import static by.mishota.graduation.resource.PagePath.*;
 
 public class LoginCommand implements ActionCommand {
     private static final String PARAM_NAME_LOGIN = "login";

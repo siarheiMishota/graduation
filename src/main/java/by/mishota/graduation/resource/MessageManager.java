@@ -2,7 +2,7 @@ package by.mishota.graduation.resource;
 
 import java.util.ResourceBundle;
 
-import static by.mishota.graduation.resource.ParamStringManager.PARAM_MESSAGES_NAME;
+import static by.mishota.graduation.resource.PagePath.PARAM_MESSAGES_NAME;
 
 public class MessageManager {
 
