@@ -1,28 +1,17 @@
 package by.mishota.graduation.validation;
 
-import by.mishota.graduation.dao.UserDao;
-import by.mishota.graduation.dao.impl.UserDaoImpl;
-import by.mishota.graduation.entity.User;
-import by.mishota.graduation.exception.DaoException;
-import by.mishota.graduation.exception.ServiceException;
-import by.mishota.graduation.service.ParamStringService;
-
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Pattern;
-
-import static by.mishota.graduation.util.Md5.generateHashMd5;
 
 public class Validator {
     public static final String PARAM_ATTRIBUTE_GENDER = "gender";
     private final static String ADMIN_LOGIN = "admin";
     private final static String ADMIN_PASSWORD = "admin";
-    private final static String REGEX_EMAIL = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)" +
-            "|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
+    private final static String REGEX_EMAIL = "^([\\w\\-\\.]+)@((\\[\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.)" +
+            "|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|\\d{1,3})(\\]?)$";
     private final static String REGEX_BIRTH = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$";
     private final static String REGEX_PASSWORD = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$";
     public static final String MALE = "male";
@@ -42,23 +31,6 @@ public class Validator {
     private Validator() {
     }
 
-    public static boolean validateSignIn(String login, String password) throws ServiceException {
-        UserDao userDao = new UserDaoImpl();
-        try {
-            Optional<User> foundUser = userDao.findByLogin(login);
-            if (foundUser.isPresent()) {
-                String s = generateHashMd5(password);
-                return foundUser.get().getPassword().equals(s);
-            }
-        } catch (DaoException e) {
-            throw new ServiceException(ParamStringService.ERROR_GETTING_THE_USER, e);
-
-        } catch (NoSuchAlgorithmException e) {
-            throw new ServiceException("Encryption error of password", e);
-
-        }
-        return false;
-    }
 
     public static Map<String, String> validateSignUp(String email, String password,
                                                      String birth, String gender, String namePhoto) {
@@ -102,35 +74,38 @@ public class Validator {
     }
 
     private static boolean validateEmailRegex(String email) {
+        if (email == null) {
+            return false;
+        }
         return Pattern.matches(REGEX_EMAIL, email);
     }
 
     private static boolean validateCorrectStringBirth(String birth) {
-        if (birth != null) {
-
-            try {
-                LocalDate.parse(birth);
-            } catch (DateTimeParseException e) {
-                return false;
-            }
-            return true;
+        if (birth == null) {
+            return false;
         }
-        return false;
+
+        try {
+            LocalDate.parse(birth);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+        return true;
     }
 
     private static boolean validateBirthInPast(String birth) {
 
-        if (birth != null) {
-            LocalDate parseBirth;
-            try {
-                parseBirth = LocalDate.parse(birth);
-            } catch (DateTimeParseException e) {
-                return false;
-            }
-            return LocalDate.now().isAfter(parseBirth);
+        if (birth == null) {
+            return false;
         }
 
-        return false;
+        LocalDate parseBirth;
+        try {
+            parseBirth = LocalDate.parse(birth);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+        return LocalDate.now().isAfter(parseBirth);
     }
 
     private static boolean validateFileExtensionPhoto(String name) {

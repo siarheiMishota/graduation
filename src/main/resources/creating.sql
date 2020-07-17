@@ -26,8 +26,9 @@ create table users
 
 create table entrants
 (
-    id      int auto_increment,
-    user_id int,
+    id          int auto_increment,
+    user_id     int unique,
+    certificate int not null,
 
     primary key (id)
 );
@@ -46,16 +47,16 @@ create table faculties
 
 create table entrants_faculties_priority
 (
-    id           int auto_increment,
-    entrant_id   int not null,
-    faculties_id int not null,
-    priority     int not null,
+    id         int auto_increment,
+    entrant_id int not null,
+    faculty_id int not null,
+    priority   int not null,
 
     primary key (id),
 
 
     foreign key (entrant_id) REFERENCES entrants (id),
-    foreign key (faculties_id) REFERENCES faculties (id)
+    foreign key (faculty_id) REFERENCES faculties (id)
 );
 
 create table subjects

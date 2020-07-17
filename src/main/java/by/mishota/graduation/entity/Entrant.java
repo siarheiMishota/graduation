@@ -1,21 +1,23 @@
 package by.mishota.graduation.entity;
 
 import java.util.List;
-import java.util.Map;
 
 public class Entrant {
 
     private int id;
     private User user;
     private int certificate;
-    private Map<Integer,Integer> results;
-    private Map<Integer, Integer> priority;
+    private List<SubjectResult> results;
+    private List<FacultyPriority> priorities;
 
-    public Entrant(User user, int certificate, Map<Integer,Integer> results, Map<Integer, Integer> priority) {
+    public Entrant(User user, int certificate, List<SubjectResult> results, List<FacultyPriority> priorities) {
         this.user = user;
         this.certificate = certificate;
         this.results = results;
-        this.priority = priority;
+        this.priorities = priorities;
+    }
+
+    public Entrant() {
     }
 
     public int getId() {
@@ -42,20 +44,20 @@ public class Entrant {
         this.certificate = certificate;
     }
 
-    public Map<Integer, Integer> getResults() {
+    public List<SubjectResult> getResults() {
         return results;
     }
 
-    public void setResults(Map<Integer,Integer> results) {
+    public void setResults(List<SubjectResult> results) {
         this.results = results;
     }
 
-    public Map<Integer, Integer> getPriority() {
-        return priority;
+    public List<FacultyPriority> getPriorities() {
+        return priorities;
     }
 
-    public void setPriority(Map<Integer, Integer> priority) {
-        this.priority = priority;
+    public void setPriorities(List<FacultyPriority> priorities) {
+        this.priorities = priorities;
     }
 
     @Override
@@ -69,7 +71,7 @@ public class Entrant {
         if (certificate != entrant.certificate) return false;
         if (user != null ? !user.equals(entrant.user) : entrant.user != null) return false;
         if (results != null ? !results.equals(entrant.results) : entrant.results != null) return false;
-        return priority != null ? priority.equals(entrant.priority) : entrant.priority == null;
+        return priorities != null ? priorities.equals(entrant.priorities) : entrant.priorities == null;
     }
 
     @Override
@@ -78,16 +80,18 @@ public class Entrant {
         result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + certificate;
         result = 31 * result + (results != null ? results.hashCode() : 0);
-        result = 31 * result + (priority != null ? priority.hashCode() : 0);
+        result = 31 * result + (priorities != null ? priorities.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
 
-        StringBuilder builder = new StringBuilder();
-        builder.append("Entrant( ").append(id).append(", ").append(user).append(", cerificate= ").append(certificate)
-                .append(", ").append(results).append(", ").append(priority).append(")");
-        return builder.toString();
+        return new StringBuilder().append("Entrant( ").
+                append(id).append(", ")
+                .append(user).append(", certificate= ")
+                .append(certificate).append(", ")
+                .append(results).append(", ")
+                .append(priorities).append(") ").toString();
     }
 }

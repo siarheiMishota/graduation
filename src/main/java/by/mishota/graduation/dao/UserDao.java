@@ -3,6 +3,7 @@ package by.mishota.graduation.dao;
 import by.mishota.graduation.entity.User;
 import by.mishota.graduation.exception.DaoException;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +20,7 @@ public interface UserDao extends Dao {
 
     List<User> findAllAdults() throws DaoException;
 
-    Optional<User> findByActivationCode(String activationCode) throws DaoException
-            ;
+    Optional<User> findByActivationCode(String activationCode) throws DaoException;
 
     int findCountByEmail(String email) throws DaoException;
 
@@ -31,6 +31,8 @@ public interface UserDao extends Dao {
     Optional<User> findByEmail(String email) throws DaoException;
 
     Optional<User> add(User user) throws DaoException;
+    Optional<User> add(User user, Connection connection) throws DaoException;
 
     int update(User user) throws DaoException;
+    int update(User user,Connection connection) throws DaoException;
 }

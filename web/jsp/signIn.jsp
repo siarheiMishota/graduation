@@ -7,6 +7,9 @@
     <title><fmt:message key="title" bundle="${rb}"/></title>
 </head>
 <body>
+
+<%@ include file="header.jsp"%>
+
 <form name="loginForm" method="post" action="${pageContext.request.contextPath}/controller">
     <input type="hidden" name="command" value="login">
     ${confirmed}

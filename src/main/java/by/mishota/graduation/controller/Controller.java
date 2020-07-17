@@ -1,7 +1,7 @@
 package by.mishota.graduation.controller;
 
-import by.mishota.graduation.command.ActionCommand;
-import by.mishota.graduation.command.factory.CommandFactory;
+import by.mishota.graduation.controller.command.ActionCommand;
+import by.mishota.graduation.controller.command.factory.CommandFactory;
 import by.mishota.graduation.resource.ConfigurationManager;
 import by.mishota.graduation.resource.MessageManager;
 

@@ -11,26 +11,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static by.mishota.graduation.dao.SqlColumnName.STUDENT_ID_COLUMN_NAME;
+import static by.mishota.graduation.dao.impl.SqlColumnName.*;
+import static by.mishota.graduation.dao.sql_query.SqlQuerySubjectDao.*;
 
 public class SubjectDaoImpl implements SubjectDao {
 
     private static final int DUPLICATE_ENTRY_ERROR_CODE = 1062;
 
-    private static final String SELECT_FIND_BY_ID = "SELECT id, name FROM subjects where id=";
-    private static final String SELECT_FIND_ALL_BY_FACULTY = "select subjects.id, name, faculties_id, subject_id from subjects join subjects_to_faculties stf on subjects.id = stf.subject_id where faculties_id=";
-    private static final String ADD = "INSERT INTO subjects(name) value (?);";
+
     public static final String PARAM_NAME = "name";
 
     @Override
     public void add(Subject subject) throws DaoException {
-        ConnectionPool pool;
         Connection connection = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            add(subject, connection);
+        } catch (ConnectionPoolException e) {
+            throw new DaoException("Error getting connection", e);
+        } finally {
+            close(connection);
+        }
+    }
+
+    @Override
+    public void add(Subject subject, Connection connection) throws DaoException {
         PreparedStatement statement = null;
         ResultSet generatedKeys = null;
         try {
-            pool = ConnectionPool.getInstance();
-            connection = pool.getConnection();
             statement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, subject.getName());
 
@@ -50,12 +58,41 @@ public class SubjectDaoImpl implements SubjectDao {
                 throw new DaoException("Cannot insert a duplicate subject ", e);
             }
             throw new DaoException("Error connecting to database", e);
-        } catch (ConnectionPoolException e) {
-            throw new DaoException("Error getting connection", e);
         } finally {
-            close(connection, statement, generatedKeys);
+            close(statement, generatedKeys);
         }
+    }
 
+
+
+    @Override
+    public int update(Subject subject, Connection connection) throws DaoException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(UPDATE);
+            preparedStatement.setString(1, subject.getName());
+            preparedStatement.setInt(2, subject.getId());
+
+            return preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DaoException("Error getting result", e);
+        } finally {
+            close(preparedStatement);
+        }
+    }
+
+    @Override
+    public int update(Subject subject) throws DaoException {
+        Connection connection = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            return update(subject, connection);
+        } catch (ConnectionPoolException e) {
+            throw new DaoException("Error getting connection from connection pool", e);
+        } finally {
+            close(connection);
+        }
     }
 
     @Override
@@ -91,7 +128,7 @@ public class SubjectDaoImpl implements SubjectDao {
             resultSet = statement.executeQuery(sqlRequest);
 
             while (resultSet.next()) {
-                subjects.add(resultSet.getInt(STUDENT_ID_COLUMN_NAME));
+                subjects.add(resultSet.getInt(STUDENT_ID));
             }
         } catch (SQLException e) {
             throw new DaoException("Error getting result", e);
@@ -130,11 +167,18 @@ public class SubjectDaoImpl implements SubjectDao {
     private Subject parseSubject(ResultSet resultSet) throws SQLException {
 
         Subject subject = new Subject();
-        subject.setId(resultSet.getInt(STUDENT_ID_COLUMN_NAME));
-        subject.setName(resultSet.getString(PARAM_NAME));
+        subject.setId(resultSet.getInt(SUBJECT_ID));
+        subject.setName(resultSet.getString(SUBJECT_NAME));
 
         return subject;
 
+    }
+
+    public static void main(String[] args) throws DaoException {
+        SubjectDao subjectDao=new SubjectDaoImpl();
+        Optional<Subject> byId = subjectDao.findById(17);
+        byId.get().setName("Хихимия");
+        subjectDao.update(byId.get());
     }
 
 

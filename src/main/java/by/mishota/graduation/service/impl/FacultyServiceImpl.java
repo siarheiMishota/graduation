@@ -1,6 +1,7 @@
 package by.mishota.graduation.service.impl;
 
 import by.mishota.graduation.dao.FacultyDao;
+import by.mishota.graduation.dao.factory.DaoFactory;
 import by.mishota.graduation.dao.impl.FacultyDaoImpl;
 import by.mishota.graduation.entity.Faculty;
 import by.mishota.graduation.exception.DaoException;
@@ -15,7 +16,7 @@ public class FacultyServiceImpl implements FacultyService {
 
         List<Faculty> faculties;
 
-        FacultyDao facultyDao = new FacultyDaoImpl();
+        FacultyDao facultyDao = DaoFactory.getInstance().getFacultyDao();
         try {
             faculties = facultyDao.findAll();
         } catch (DaoException e) {

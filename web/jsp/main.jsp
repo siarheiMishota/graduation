@@ -8,7 +8,7 @@
     <title><fmt:message key="graduation" bundle="${rb}"/></title>
 </head>
 <body>
-
+<jsp:include page="header.jsp"/>
 <form name="mainForm" method="post" action="${pageContext.request.contextPath}/controller">
 
     <input type="hidden" name="command" value="main">

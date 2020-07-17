@@ -92,9 +92,12 @@ public class Faculty {
     public String toString() {
 
         StringBuilder builder = new StringBuilder();
-        builder.append("Faculty( ").append(id).append(", ").append(name).append(", free places= ")
-                .append(numberFreePlaces).append(", pay places= ").append(numberPayPlaces).append(", ")
-                .append(idNeedSubjects).append(", ").append(idStudents).append(")");
+        builder.append("Faculty( ").append(id).append(", ")
+                .append(name).append(", free places= ")
+                .append(numberFreePlaces).append(", pay places= ")
+                .append(numberPayPlaces).append(", ")
+                .append(idNeedSubjects).append(", ")
+                .append(idStudents).append(")");
 
         return builder.toString();
     }

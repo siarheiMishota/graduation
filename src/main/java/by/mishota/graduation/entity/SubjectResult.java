@@ -3,12 +3,15 @@ package by.mishota.graduation.entity;
 public class SubjectResult {
 
     private int id;
-    private int subject;
-    private int result;
+    private int subjectId;
+    private int points;
 
-    public SubjectResult(int subject, int result) {
-        this.subject = subject;
-        this.result = result;
+    public SubjectResult(int subjectId, int points) {
+        this.subjectId = subjectId;
+        this.points = points;
+    }
+
+    public SubjectResult() {
     }
 
     public int getId() {
@@ -19,20 +22,20 @@ public class SubjectResult {
         this.id = id;
     }
 
-    public int getSubject() {
-        return subject;
+    public int getSubjectId() {
+        return subjectId;
     }
 
-    public void setSubject(int subject) {
-        this.subject = subject;
+    public void setSubjectId(int subjectId) {
+        this.subjectId = subjectId;
     }
 
-    public int getResult() {
-        return result;
+    public int getPoints() {
+        return points;
     }
 
-    public void setResult(int result) {
-        this.result = result;
+    public void setPoints(int points) {
+        this.points = points;
     }
 
 
@@ -44,15 +47,15 @@ public class SubjectResult {
         SubjectResult that = (SubjectResult) o;
 
         if (id != that.id) return false;
-        if (subject != that.subject) return false;
-        return result == that.result;
+        if (subjectId != that.subjectId) return false;
+        return points == that.points;
     }
 
     @Override
     public int hashCode() {
         int result1 = id;
-        result1 = 31 * result1 + subject;
-        result1 = 31 * result1 + result;
+        result1 = 31 * result1 + subjectId;
+        result1 = 31 * result1 + points;
         return result1;
     }
 
@@ -60,8 +63,8 @@ public class SubjectResult {
     public String toString() {
 
         StringBuilder builder = new StringBuilder();
-        builder.append("SubjectResult( ").append(id).append(", id subject= ").append(subject).append(",  ")
-                .append("result= ").append(result).append(")");
+        builder.append("SubjectResult( ").append(id).append(", id subject= ").append(subjectId).append(",  ")
+                .append("result= ").append(points).append(")");
         return builder.toString();
     }
 }

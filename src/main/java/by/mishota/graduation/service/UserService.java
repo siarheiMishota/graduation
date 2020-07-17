@@ -13,6 +13,8 @@ public interface UserService {
 
     Role checkRole(String login, String password) throws ServiceException;
 
+    Optional<User> findByLogin(String login) throws ServiceException;
+
     Map<String, String> checkSignUp(String login, String email, String password, String surname,
                                     String firstName, String fatherName, String passportId,
                                     String birth, String gender, String namePhoto) throws ServiceException;

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static by.mishota.graduation.resource.PagePath.*;
+import static by.mishota.graduation.resource.FilePath.*;
 
 @WebServlet("/www")
 public class WwwController extends HttpServlet {
