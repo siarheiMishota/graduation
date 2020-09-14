@@ -9,6 +9,8 @@ public class SqlQuerySubjectDao {
 
     public static final String UPDATE = "update subjects set  name=? where id=?";
 
-    public SqlQuerySubjectDao() {
+    public static final String DELETE="delete from subjects where id=";
+
+    private SqlQuerySubjectDao() {
     }
 }

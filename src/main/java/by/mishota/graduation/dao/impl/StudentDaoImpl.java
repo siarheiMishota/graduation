@@ -8,19 +8,20 @@ import by.mishota.graduation.entity.Student;
 import by.mishota.graduation.entity.User;
 import by.mishota.graduation.exception.ConnectionPoolException;
 import by.mishota.graduation.exception.DaoException;
+import by.mishota.graduation.exception.DuplicateException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static by.mishota.graduation.controller.Attribute.VALUE_ATTRIBUTE_DUPLICATE;
 import static by.mishota.graduation.dao.impl.SqlColumnName.*;
 import static by.mishota.graduation.dao.sql_query.SqlQueryStudentDao.*;
 
 
 public class StudentDaoImpl implements StudentDao {
 
-    private static final int DUPLICATE_ENTRY_ERROR_CODE = 1062;
 
     @Override
     public List<Student> findAll() throws DaoException {
@@ -30,12 +31,19 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public List<Student> findAllByFacultyId(int facultyId) throws DaoException {
+        if (facultyId<0){
+           return List.of();
+        }
+
         return findStudents(SELECT_ALL_BY_FACULTY_ID + facultyId);
 
     }
 
     @Override
     public List<Integer> findAllIdByFacultyId(int facultyId) throws DaoException {
+        if (facultyId<0){
+            return List.of();
+        }
         return findIdStudents(SELECT_ALL_BY_FACULTY_ID + facultyId);
     }
 
@@ -63,7 +71,7 @@ public class StudentDaoImpl implements StudentDao {
     }
 
     @Override
-    public List<Student> findByFree() throws DaoException {
+    public List<Student> findAllFree() throws DaoException {
         return findStudents(SELECT_ALL_FREER);
 
     }
@@ -85,6 +93,9 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public Optional<Student> findById(int id) throws DaoException {
+        if (id<0){
+            return Optional.empty();
+        }
         List<Student> students = findStudents(SELECT_BY_ID + id);
 
         if (students.isEmpty()) {
@@ -119,27 +130,13 @@ public class StudentDaoImpl implements StudentDao {
     }
 
 
+
+
     @Override
-    public int update(Student student, Connection connection) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(UPDATE);
-            preparedStatement.setInt(1, student.getUser().getId());
-            preparedStatement.setInt(2, student.getIdFaculty());
-            preparedStatement.setBoolean(3, student.isBudget());
-            preparedStatement.setInt(4, student.getId());
-
-            return preparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new DaoException("Error getting result", e);
-        } finally {
-            close(preparedStatement);
+    public Optional<Student> add(Student student) throws DaoException, DuplicateException {
+        if (student==null){
+            return Optional.empty();
         }
-    }
-
-    @Override
-    public Optional<Student> add(Student student) throws DaoException {
         Connection connection = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
@@ -153,7 +150,10 @@ public class StudentDaoImpl implements StudentDao {
     }
 
     @Override
-    public Optional<Student> add(Student student, Connection connection) throws DaoException {
+    public Optional<Student> add(Student student, Connection connection) throws DaoException, DuplicateException {
+        if (student==null){
+            return Optional.empty();
+        }
         PreparedStatement statement = null;
         ResultSet generatedKeys = null;
 
@@ -179,7 +179,7 @@ public class StudentDaoImpl implements StudentDao {
             }
         } catch (SQLException e) {
             if (e.getErrorCode() == DUPLICATE_ENTRY_ERROR_CODE) {
-                throw new DaoException("Cannot insert a duplicate student ", e);
+                throw new DuplicateException(e);
             }
             throw new DaoException("Error connecting to database", e);
         } finally {
@@ -191,6 +191,9 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public int update(Student student) throws DaoException {
+        if (student==null){
+            return -1;
+        }
         Connection connection = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
@@ -199,6 +202,27 @@ public class StudentDaoImpl implements StudentDao {
             throw new DaoException("Error getting connection", e);
         } finally {
             close(connection);
+        }
+    }
+    @Override
+    public int update(Student student, Connection connection) throws DaoException {
+        if (student==null){
+            return -1;
+        }
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(UPDATE);
+            preparedStatement.setInt(1, student.getUser().getId());
+            preparedStatement.setInt(2, student.getIdFaculty());
+            preparedStatement.setBoolean(3, student.isBudget());
+            preparedStatement.setInt(4, student.getId());
+
+            return preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DaoException("Error getting result", e);
+        } finally {
+            close(preparedStatement);
         }
     }
 
@@ -218,19 +242,43 @@ public class StudentDaoImpl implements StudentDao {
         } else {
             throw new DaoException("User isn't found for student");
         }
-
         return student;
     }
 
-    public static void main(String[] args) throws DaoException, ConnectionPoolException {//todo
-        StudentDao studentDao = new StudentDaoImpl();
-        Student student = new Student();
-        student.setId(41);
-        student.setBudget(false);
-        student.setIdFaculty(46);
-        User user = new User.Builder().setId(19).build();
-        student.setUser(user);
-        System.out.println(studentDao.update(student));
+    @Override
+    public boolean delete(Student student) throws DaoException {
+        if (student==null) {
+            return false;
+        }
+
+        Connection connection = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            return delete(student, connection);
+
+        } catch (ConnectionPoolException e) {
+            throw new DaoException("Error getting connection from connection pool", e);
+        } finally {
+            close(connection);
+        }
     }
 
+    @Override
+    public boolean delete(Student student, Connection connection) throws DaoException {
+        if (student==null) {
+            return false;
+        }
+
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            int updatedRows = statement.executeUpdate(DELETE + student.getId());
+            return updatedRows != 0;
+
+        } catch (SQLException e) {
+            throw new DaoException("Error deletion student by id", e);
+        } finally {
+            close(statement);
+        }
+    }
 }

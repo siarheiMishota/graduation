@@ -2,6 +2,7 @@ package by.mishota.graduation.dao;
 
 import by.mishota.graduation.entity.User;
 import by.mishota.graduation.exception.DaoException;
+import by.mishota.graduation.exception.DuplicateException;
 
 import java.sql.Connection;
 import java.util.List;
@@ -30,9 +31,19 @@ public interface UserDao extends Dao {
 
     Optional<User> findByEmail(String email) throws DaoException;
 
-    Optional<User> add(User user) throws DaoException;
-    Optional<User> add(User user, Connection connection) throws DaoException;
+    Optional<User> add(User user) throws DaoException, DuplicateException;
 
-    int update(User user) throws DaoException;
-    int update(User user,Connection connection) throws DaoException;
+    Optional<User> add(User user, Connection connection) throws DaoException, DuplicateException;
+
+    int update(User user) throws DaoException, DuplicateException;
+
+    boolean deleteById(int id) throws DaoException;
+
+    boolean deleteById(int id, Connection connection) throws DaoException;
+
+    boolean deleteByLogin(String login) throws DaoException;
+
+    boolean deleteByLogin(String login, Connection connection) throws DaoException;
+
+    int update(User user, Connection connection) throws DaoException, DuplicateException;
 }

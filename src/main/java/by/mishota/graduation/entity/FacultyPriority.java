@@ -2,15 +2,15 @@ package by.mishota.graduation.entity;
 
 public class FacultyPriority {
     private int id;
-    private int entrantId;
     private int facultyId;
     private int priority;
 
-    public FacultyPriority(int id, int entrantId, int facultyId, int priority) {
-        this.id = id;
-        this.entrantId = entrantId;
+    public FacultyPriority( int facultyId, int priority) {
         this.facultyId = facultyId;
         this.priority = priority;
+    }
+
+    public FacultyPriority() {
     }
 
     public int getId() {
@@ -19,14 +19,6 @@ public class FacultyPriority {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getEntrantId() {
-        return entrantId;
-    }
-
-    public void setEntrantId(int entrantId) {
-        this.entrantId = entrantId;
     }
 
     public int getFacultyId() {
@@ -53,7 +45,6 @@ public class FacultyPriority {
         FacultyPriority that = (FacultyPriority) o;
 
         if (id != that.id) return false;
-        if (entrantId != that.entrantId) return false;
         if (facultyId != that.facultyId) return false;
         return priority == that.priority;
     }
@@ -61,7 +52,6 @@ public class FacultyPriority {
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + entrantId;
         result = 31 * result + facultyId;
         result = 31 * result + priority;
         return result;
@@ -70,10 +60,9 @@ public class FacultyPriority {
     @Override
     public String toString() {
         StringBuilder builder=new StringBuilder();
-        builder.append("FacultyPriority(")
-                .append(id).append(", ")
-                .append(entrantId).append(", ")
-                .append(facultyId).append(", ")
+        builder.append("FacultyPriority( id= ")
+                .append(id).append(", facultyId= ")
+                .append(facultyId).append(", priority= ")
                 .append(priority).append(") ");
 
         return builder.toString();

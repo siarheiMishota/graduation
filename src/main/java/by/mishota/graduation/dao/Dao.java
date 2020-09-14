@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public interface Dao {
+    int DUPLICATE_ENTRY_ERROR_CODE = 1062;
 
     Logger logger = LogManager.getLogger();
 
@@ -39,7 +40,7 @@ public interface Dao {
         }
     }
 
-    default void close( Statement statement,ResultSet resultSet) {
+    default void close(Statement statement, ResultSet resultSet) {
         if (statement != null) {
             try {
                 statement.close();
@@ -88,7 +89,7 @@ public interface Dao {
         }
     }
 
-    default void close(Connection connection){
+    default void close(Connection connection) {
         if (connection != null) {
             try {
                 connection.close();

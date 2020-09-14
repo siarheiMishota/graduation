@@ -1,0 +1,8 @@
+/*@import './scss/variables';*/
+/*@import '~bulma';*/
+
+.navbar-start {
+    justify-content: center;
+    width: 100%;
+}
+

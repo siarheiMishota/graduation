@@ -1,25 +1,27 @@
 package by.mishota.graduation.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
     private int id;
+    private String login;
+    private String email;
+    private String surname;
+    private String firstName;
+    private String fatherName;
     private String passportId;
     private LocalDate birth;
-    private String login;
     private String password;
-    private String email;
-    private String firstName;
-    private String surname;
-    private String fatherName;
     private Gender gender;
     private boolean confirmed;
-    private String photo;
+    private List<String> photos;
     private Role role;
     private String activationCode;
 
     private User(int id, String passportId, LocalDate birth, String login, String password, String email, String firstName,
-                 String surname, String fatherName, Gender gender, boolean confirmed, String photo, Role role, String activationCode) {
+                 String surname, String fatherName, Gender gender, boolean confirmed, List<String> photos, Role role, String activationCode) {
         this.id = id;
         this.passportId = passportId;
         this.birth = birth;
@@ -31,7 +33,7 @@ public class User {
         this.fatherName = fatherName;
         this.gender = gender;
         this.confirmed = confirmed;
-        this.photo = photo;
+        this.photos = photos;
         this.role = role;
         this.activationCode = activationCode;
     }
@@ -140,17 +142,16 @@ public class User {
         this.confirmed = confirmed;
     }
 
-    public String getPhoto() {
-        return photo;
+    public List<String> getPhotos() {
+        return photos;
     }
 
-    public void setPhoto(String photo) {
-        this.photo = photo;
+    public void setPhotos(List<String> photos) {
+        this.photos = photos;
     }
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -167,7 +168,9 @@ public class User {
         if (surname != null ? !surname.equals(user.surname) : user.surname != null) return false;
         if (fatherName != null ? !fatherName.equals(user.fatherName) : user.fatherName != null) return false;
         if (gender != user.gender) return false;
-        return photo != null ? photo.equals(user.photo) : user.photo == null;
+        if (photos != null ? !photos.equals(user.photos) : user.photos != null) return false;
+        if (role != user.role) return false;
+        return activationCode != null ? activationCode.equals(user.activationCode) : user.activationCode == null;
     }
 
     @Override
@@ -183,7 +186,9 @@ public class User {
         result = 31 * result + (fatherName != null ? fatherName.hashCode() : 0);
         result = 31 * result + (gender != null ? gender.hashCode() : 0);
         result = 31 * result + (confirmed ? 1 : 0);
-        result = 31 * result + (photo != null ? photo.hashCode() : 0);
+        result = 31 * result + (photos != null ? photos.hashCode() : 0);
+        result = 31 * result + (role != null ? role.hashCode() : 0);
+        result = 31 * result + (activationCode != null ? activationCode.hashCode() : 0);
         return result;
     }
 
@@ -191,7 +196,7 @@ public class User {
     public String toString() {
 
         StringBuilder builder = new StringBuilder();
-        builder.append("User{ ");
+        builder.append("User( ");
         builder.append(id).append(", ");
         builder.append(passportId).append(", ");
         builder.append(birth).append(", ");
@@ -202,8 +207,9 @@ public class User {
         builder.append(surname).append(", ");
         builder.append(fatherName).append(", ");
         builder.append(gender).append(", ");
-        builder.append(photo).append(", ");
-        builder.append(confirmed);
+        builder.append(photos).append(", ");
+        builder.append(activationCode).append(", ");
+        builder.append(confirmed).append(");");
 
         return builder.toString();
     }
@@ -220,7 +226,7 @@ public class User {
         private String fatherName;
         private Gender gender;
         private boolean confirmed;
-        private String pathToPhoto;
+        private List<String> photos;
         private Role role;
         private String activationCode;
 
@@ -236,7 +242,7 @@ public class User {
             fatherName = "";
             gender = Gender.MALE;
             confirmed = false;
-            pathToPhoto = "";
+            photos =new ArrayList<>();
             role = Role.USER;
             activationCode = null;
 
@@ -298,8 +304,8 @@ public class User {
             return this;
         }
 
-        public Builder setPathToPhoto(String pathToPhoto) {
-            this.pathToPhoto = pathToPhoto;
+        public Builder setPhotos(List<String> photos) {
+            this.photos = photos;
             return this;
         }
 
@@ -314,7 +320,7 @@ public class User {
         }
 
         public User build() {
-            return new User(id, passportId, birth, login, password, email, firstName, surname, fatherName, gender, confirmed, pathToPhoto, role, activationCode);
+            return new User(id, passportId, birth, login, password, email, firstName, surname, fatherName, gender, confirmed, photos, role, activationCode);
         }
     }
 

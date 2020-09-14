@@ -19,11 +19,11 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ConnectionPool {
-    private static final String PATH_DATABASE_PROPERTIES = "prop/database.properties"; //todo
     private static final String PARAM_URL = "url";
     private static final String PARAM_DRIVER = "driver";
-
     private static final int DEFAULT_POOL_SIZE = 12;
+
+    private static String PATH_DATABASE_PROPERTIES = "prop/database.properties";
     private static ConnectionPool instance;
     private static Logger logger = LogManager.getLogger();
     private static boolean poolClosed = false;
@@ -53,6 +53,10 @@ public class ConnectionPool {
             throw new ConnectionPoolException("Pool was closed and can't get the instance");
         }
         return instance;
+    }
+
+    public static void setPathDatabaseProperties(String path) {
+        PATH_DATABASE_PROPERTIES = path;
     }
 
     private ConnectionPool() throws ConnectionPoolException {
@@ -99,6 +103,10 @@ public class ConnectionPool {
         return poolSize;
     }
 
+    public int getPoolFreeSize() {
+        return freeConnections.size();
+    }
+
     public Connection getConnection() throws ConnectionPoolException {
         ProxyConnection connection;
 
@@ -135,7 +143,7 @@ public class ConnectionPool {
     }
 
     public void closedPool() {
-
+        poolClosed = true;
         for (int i = 0; i < freeConnections.size(); i++) {
             try {
                 freeConnections.take();
@@ -149,7 +157,7 @@ public class ConnectionPool {
                 try {
                     DriverManager.deregisterDriver(driver);
                 } catch (SQLException e) {
-                    logger.warn("Driver doesn't deregister",e);
+                    logger.warn("Driver doesn't deregister", e);
                 }
             });
         }

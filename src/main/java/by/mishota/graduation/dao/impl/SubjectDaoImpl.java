@@ -5,28 +5,28 @@ import by.mishota.graduation.dao.pool.ConnectionPool;
 import by.mishota.graduation.entity.Subject;
 import by.mishota.graduation.exception.ConnectionPoolException;
 import by.mishota.graduation.exception.DaoException;
+import by.mishota.graduation.exception.DuplicateException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static by.mishota.graduation.controller.Attribute.VALUE_ATTRIBUTE_DUPLICATE;
 import static by.mishota.graduation.dao.impl.SqlColumnName.*;
 import static by.mishota.graduation.dao.sql_query.SqlQuerySubjectDao.*;
 
 public class SubjectDaoImpl implements SubjectDao {
 
-    private static final int DUPLICATE_ENTRY_ERROR_CODE = 1062;
-
-
-    public static final String PARAM_NAME = "name";
-
     @Override
-    public void add(Subject subject) throws DaoException {
+    public Optional<Subject> add(Subject subject) throws DaoException, DuplicateException {
+        if (subject==null){
+            return Optional.empty();
+        }
         Connection connection = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            add(subject, connection);
+            return  add(subject, connection);
         } catch (ConnectionPoolException e) {
             throw new DaoException("Error getting connection", e);
         } finally {
@@ -35,7 +35,10 @@ public class SubjectDaoImpl implements SubjectDao {
     }
 
     @Override
-    public void add(Subject subject, Connection connection) throws DaoException {
+    public Optional<Subject> add(Subject subject, Connection connection) throws DaoException, DuplicateException {
+        if (subject==null){
+            return Optional.empty();
+        }
         PreparedStatement statement = null;
         ResultSet generatedKeys = null;
         try {
@@ -48,42 +51,27 @@ public class SubjectDaoImpl implements SubjectDao {
                 generatedKeys = statement.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     subject.setId(generatedKeys.getInt(1));
+                    return Optional.of(subject);
                 } else {
                     throw new DaoException("Creating subject failed, no ID obtained.");
                 }
             }
         } catch (SQLException e) {
-
             if (e.getErrorCode() == DUPLICATE_ENTRY_ERROR_CODE) {
-                throw new DaoException("Cannot insert a duplicate subject ", e);
+                throw new DuplicateException(e);
             }
             throw new DaoException("Error connecting to database", e);
         } finally {
             close(statement, generatedKeys);
         }
+        return Optional.empty();
     }
 
-
-
     @Override
-    public int update(Subject subject, Connection connection) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(UPDATE);
-            preparedStatement.setString(1, subject.getName());
-            preparedStatement.setInt(2, subject.getId());
-
-            return preparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new DaoException("Error getting result", e);
-        } finally {
-            close(preparedStatement);
+    public int update(Subject subject) throws DaoException, DuplicateException {
+        if (subject==null){
+            return -1;
         }
-    }
-
-    @Override
-    public int update(Subject subject) throws DaoException {
         Connection connection = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
@@ -96,7 +84,70 @@ public class SubjectDaoImpl implements SubjectDao {
     }
 
     @Override
+    public int update(Subject subject, Connection connection) throws DaoException, DuplicateException {
+        if (subject==null){
+            return -1;
+        }
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(UPDATE);
+            preparedStatement.setString(1, subject.getName());
+            preparedStatement.setInt(2, subject.getId());
+
+            return preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            if (e.getErrorCode() == DUPLICATE_ENTRY_ERROR_CODE) {
+                throw new DuplicateException(e);
+            }
+            throw new DaoException("Error getting result", e);
+        } finally {
+            close(preparedStatement);
+        }
+    }
+
+    @Override
+    public boolean delete(Subject subject) throws DaoException {
+        if (subject==null) {
+            return false;
+        }
+
+        Connection connection = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            return delete(subject, connection);
+
+        } catch (ConnectionPoolException e) {
+            throw new DaoException("Error getting connection from connection pool", e);
+        } finally {
+            close(connection);
+        }
+    }
+
+    @Override
+    public boolean delete(Subject subject, Connection connection) throws DaoException {
+        if (subject==null) {
+            return false;
+        }
+
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            int updatedRows = statement.executeUpdate(DELETE + subject.getId());
+            return updatedRows != 0;
+
+        } catch (SQLException e) {
+            throw new DaoException("Error deletion subject by id", e);
+        } finally {
+            close(statement);
+        }
+    }
+
+    @Override
     public Optional<Subject> findById(int id) throws DaoException {
+        if (id<0){
+            return Optional.empty();
+        }
         List<Subject> subjects = findSubjects(SELECT_FIND_BY_ID + id);
 
         if (subjects.isEmpty()) {
@@ -107,14 +158,23 @@ public class SubjectDaoImpl implements SubjectDao {
 
     @Override
     public List<Subject> findAllByFacultyId(int facultyId) throws DaoException {
+        if (facultyId<0){
+            return List.of();
+        }
         return findSubjects(SELECT_FIND_ALL_BY_FACULTY + facultyId);
+    }
 
+    @Override
+    public List<Subject> findAll() throws DaoException {
+        return findSubjects(SELECT_ALL);
     }
 
     @Override
     public List<Integer> findAllIdByFacultyId(int facultyId) throws DaoException {
+        if (facultyId<0){
+            return List.of();
+        }
         return findIdSubjects(SELECT_FIND_ALL_BY_FACULTY + facultyId);
-
     }
 
     private List<Integer> findIdSubjects(String sqlRequest) throws DaoException {
@@ -173,13 +233,4 @@ public class SubjectDaoImpl implements SubjectDao {
         return subject;
 
     }
-
-    public static void main(String[] args) throws DaoException {
-        SubjectDao subjectDao=new SubjectDaoImpl();
-        Optional<Subject> byId = subjectDao.findById(17);
-        byId.get().setName("Хихимия");
-        subjectDao.update(byId.get());
-    }
-
-
 }

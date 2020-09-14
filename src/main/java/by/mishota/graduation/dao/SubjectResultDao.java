@@ -1,8 +1,8 @@
 package by.mishota.graduation.dao;
 
 import by.mishota.graduation.entity.SubjectResult;
-import by.mishota.graduation.entity.User;
 import by.mishota.graduation.exception.DaoException;
+import by.mishota.graduation.exception.DuplicateException;
 
 import java.sql.Connection;
 import java.util.List;
@@ -14,11 +14,15 @@ public interface SubjectResultDao extends Dao {
 
     List<SubjectResult> findAllByEntrantId(int studentId) throws DaoException;
 
-    Optional<SubjectResult> add(SubjectResult subjectResult, int entrantId) throws DaoException;
+    Optional<SubjectResult> add(SubjectResult subjectResult, int entrantId) throws DaoException, DuplicateException;
 
-    Optional<SubjectResult> add(SubjectResult subjectResult, int entrantId, Connection connection) throws DaoException;
+    Optional<SubjectResult> add(SubjectResult subjectResult, int entrantId, Connection connection) throws DaoException, DuplicateException;
 
-    int update(SubjectResult subjectResult,int entrantId) throws DaoException;
+    int update(SubjectResult subjectResult, int entrantId) throws DaoException, DuplicateException;
 
-    int update(SubjectResult subjectResult,int entrantId, Connection connection) throws DaoException;
+    int update(SubjectResult subjectResult, int entrantId, Connection connection) throws DaoException, DuplicateException;
+
+    boolean delete(SubjectResult subjectResult) throws DaoException, DuplicateException;
+
+    boolean delete(SubjectResult subjectResult, Connection connection) throws DaoException, DuplicateException;
 }

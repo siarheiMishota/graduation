@@ -20,7 +20,7 @@ create table users
         unique (email),
     constraint login
         unique (login),
-    constraint login
+    constraint passport_id
         unique (passport_id)
 );
 
@@ -28,7 +28,8 @@ create table entrants
 (
     id          int auto_increment,
     user_id     int unique,
-    certificate int not null,
+    certificate int      not null,
+    date        datetime not null default now(),
 
     primary key (id)
 );
@@ -53,10 +54,11 @@ create table entrants_faculties_priority
     priority   int not null,
 
     primary key (id),
+    unique (entrant_id, faculty_id),
 
 
-    foreign key (entrant_id) REFERENCES entrants (id),
-    foreign key (faculty_id) REFERENCES faculties (id)
+    foreign key (entrant_id) REFERENCES entrants (id) ON DELETE CASCADE,
+    foreign key (faculty_id) REFERENCES faculties (id) ON DELETE CASCADE
 );
 
 create table subjects
@@ -74,20 +76,21 @@ create table subjects_to_faculties
     subject_id   int not null,
 
     primary key (id),
-    foreign key (faculties_id) references faculties (id),
-    foreign key (subject_id) references subjects (id)
+    foreign key (faculties_id) references faculties (id) ON DELETE CASCADE,
+    foreign key (subject_id) references subjects (id) ON DELETE CASCADE
 );
 
 create table subjects_results
 (
-    id            int auto_increment,
-    entrant_id    int not null,
-    subject_id    int not null,
-    number_points int not null,
+    id         int auto_increment,
+    entrant_id int not null,
+    subject_id int not null,
+    points     int not null,
 
+    unique (entrant_id, subject_id),
     primary key (id),
-    foreign key (entrant_id) references entrants (id),
-    foreign key (subject_id) references subjects (id)
+    foreign key (entrant_id) references entrants (id) ON DELETE CASCADE,
+    foreign key (subject_id) references subjects (id) ON DELETE CASCADE
 );
 
 create table students
@@ -97,105 +100,36 @@ create table students
     faculty_id int     not null,
     budget     boolean not null,
 
+    unique (user_id),
     primary key (id),
-    foreign key (user_id) references users (id),
-    foreign key (faculty_id) references faculties (id)
+    foreign key (user_id) references users (id) ON DELETE CASCADE,
+    foreign key (faculty_id) references faculties (id) ON DELETE CASCADE
 );
 
-insert into users(passport_id, date_birth, login, password, email, first_name, surname, father_name, gender, confirmed,
-                  role)
-    value (659, '1996-05-08', 'mishota', 'solo', 'soloyoloswag1@yandex.ru', 'Мишота', 'Сергей', 'Александрович', 'male',
-           true, 'admin');
+create table photos
+(
+    id      int auto_increment,
+    user_id int         not null,
+    name    varchar(50) not null,
 
-insert into users(passport_id, date_birth, login, password, email, surname, first_name, father_name, gender, confirmed)
-values (530, '1961-11-06', 'kryazev', 'passwordkryazev', 'kryazev@gmail.com', 'Кряжев', 'Олег', 'Викторович', 'male',
-        true),
-       (510, '1961-02-08', 'uzefovich', 'uzefovichPassword', 'uzefovich@gmail.com', 'Юзефович', 'Сергей',
-        'Викторович', 'male', true),
-       (503, '1971-01-06', 'makarevich', 'makarevichPassword', 'makarevich@gmail.com', 'Макаревич', 'Андрей',
-        'Вадимович', 'male', true),
-       (531, '1991-2-19', 'prokopovich', 'prokopovichPassword', 'prokopovich@gmail.com', 'Прокопович', 'Виталий',
-        'Анатольевич',
-        'male', true),
-       (509, '1987-12-15', 'yarockui', 'yarockuiPassword', 'yarockui@gmail.com', 'Яроцкий', 'Дмитрий', 'Васильевич',
-        'male', true),
-       (536, '1978-01-01', 'igumov', 'igumovPassword', 'igumov@gmail.com', 'Игумов', 'Всеволод', 'Сергеевич',
-        'male', true),
-       (502, '1965-05-01', 'nazarov', 'nazarovPassword', 'nazarov@gmail.com', 'Назаров', 'Анатолий', 'Александрович',
-        'male', true),
-       (538, '1986-09-08', 'prockui', 'prockuiPassword', 'prockui@gmail.com', 'Процкий', 'Владимир', 'Анатольевич',
-        'male',
-        true),
-       (589, '1961-4-04', 'shashko', 'shashkoPassword', 'shashko@gmail.com', 'Шашко', 'Алексей', 'Петрович',
-        'male', true),
-       (598, '1966-03-26', 'tarshikova', 'tarshikovaPassword', 'tarshikova@gmail.com', 'Таршикова', 'Тамара',
-        'Демьяновна',
-        'female', true),
-       (548, '1989-5-14', 'ogneva', 'ognevaPassword', 'ogneva@gmail.com', 'Огнева', 'Ольга', 'Владимировна',
-        'female', true),
-       (454, '1997-4-24', 'sokolchik', 'sokolchikPassword', 'sokolchik@gmail.com', 'Скольчик', 'Татьяна', 'Анатольевна',
-        'female', true),
-       (652, '1971-4-04', 'shytko', 'shytkoPassword', 'shytko@gmail.com', 'Шутко', 'Галина', 'Павловна',
-        'female', true),
-       (752, '1998-2-04', 'grechkina', 'grechkinaPassword', 'grechkina@gmail.com', 'гречкина', 'Галина', 'Николаевна',
-        'female', true),
-       (653, '1972-5-03', 'davidovich', 'davidovichPassword', 'davidovich@gmail.com', 'Давидович', 'Лидия', 'Ивановна',
-        'female', true),
-       (654, '1973-5-02', 'gorabchik', 'gorabchikPassword', 'gorabchik@gmail.com', 'Грабчик', 'Нина', 'Петровна',
-        'female', true),
-       (655, '1981-7-01', 'kryglenya', 'kryglenyaPassword', 'kryglenya@gmail.com', 'Кругленя', 'Светлана', 'Николаевна',
-        'female', true),
-       (656, '1991-5-12', 'sirotina', 'sirotinaPassword', 'sirotina@gmail.com', 'Сиротина', 'Людмила', 'Андреевна',
-        'female', true),
-       (657, '1999-6-11', 'malinovskaya', 'malinovskayaPassword', 'malinovskaya@gmail.com', 'Малиновская', 'Екатерина',
-        'Степановна',
-        'female', true);
+    UNIQUE (name),
+    primary key (id),
+    foreign key (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
 
-insert into subjects(name)
-VALUES ('maths'),
-       ('physics'),
-       ('russian language'),
-       ('chemistry'),
-       ('biology'),
-       ('history'),
-       ('geography'),
-       ('social science'),
-       ('english language'),
-       ('french language');
+create table news
+(
+    id                   int auto_increment,
+    name_ru              varchar(200)  not null,
+    name_en              varchar(200)  not null,
+    user_creator_id      int           not null,
+    brief_description_ru varchar(2000) not null,
+    brief_description_en varchar(2000) not null,
+    english_variable     text          not null,
+    russian_variable     text          not null,
+    creation_date        datetime      not null,
 
-insert into faculties (name, number_free_places, number_pay_places)
-values ('ФИТР', 5, 5),
-       ('АТФ', 2, 3),
-       ('ФГДЭ', 4, 3),
-       ('МСФ', 6, 6),
-       ('МТФ', 2, 3),
-       ('ФММП', 6, 4),
-       ('ЭФ', 7, 2),
-       ('ФТУГ', 10, 0),
-       ('ИПФ', 0, 12),
-       ('ФЭС', 4, 4),
-       ('АС', 3, 3),
-       ('СФ', 2, 2),
-       ('ПСФ', 5, 2)
-;
+    primary key (id),
+    foreign key (user_creator_id) references users (id) on DELETE CASCADE
+);
 
-insert into students (user_id, faculty_id, budget)
-values (1, 43, true),
-       (2, 44, true),
-       (3, 45, false),
-       (4, 46, false),
-       (5, 47, true),
-       (6, 48, false),
-       (7, 49, true),
-       (8, 50, false),
-       (9, 51, false),
-       (10, 52, true)
-;
-
-insert into subjects_to_faculties (faculties_id, subject_id)
-values (43, 1),
-       (43, 2),
-       (43, 3),
-       (44, 4),
-       (44, 3),
-       (44, 2);

@@ -3,14 +3,10 @@ package by.mishota.graduation.dao.factory;
 import by.mishota.graduation.dao.*;
 import by.mishota.graduation.dao.impl.*;
 import by.mishota.graduation.dao.pool.ConnectionPool;
-import by.mishota.graduation.entity.Entrant;
-import by.mishota.graduation.exception.ConnectionPoolException;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DaoFactory {
 
-    private static DaoFactory daoFactory=new DaoFactory();
+    private static DaoFactory instance = new DaoFactory();
 
     private UserDao userDao;
     private StudentDao studentDao;
@@ -18,18 +14,24 @@ public class DaoFactory {
     private FacultyDao facultyDao;
     private SubjectResultDao subjectResultDao;
     private EntrantDao entrantDao;
+    private FacultyPriorityDao facultyPriorityDao;
+    private PhotoDao photoDao;
+    private NewsDao newsDao;
 
     private DaoFactory() {
-        userDao=new UserDaoImpl();
-        studentDao=new StudentDaoImpl();
-        subjectDao=new SubjectDaoImpl();
-        facultyDao=new FacultyDaoImpl();
-        subjectResultDao=new SubjectResultDaoImpl();
-        entrantDao=new EntrantDaoImpl();
+        userDao = new UserDaoImpl();
+        studentDao = new StudentDaoImpl();
+        subjectDao = new SubjectDaoImpl();
+        facultyDao = new FacultyDaoImpl();
+        subjectResultDao = new SubjectResultDaoImpl();
+        entrantDao = new EntrantDaoImpl();
+        facultyPriorityDao = new FacultyPriorityDaoImpl();
+        photoDao = new PhotoDaoImpl();
+        newsDao = new NewsDaoImpl();
     }
 
-    public static DaoFactory getInstance(){
-        return daoFactory;
+    public static DaoFactory getInstance() {
+        return instance;
     }
 
     public UserDao getUserDao() {
@@ -54,5 +56,21 @@ public class DaoFactory {
 
     public EntrantDao getEntrantDao() {
         return entrantDao;
+    }
+
+    public FacultyPriorityDao getFacultyPriorityDao() {
+        return facultyPriorityDao;
+    }
+
+    public PhotoDao getPhotoDao() {
+        return photoDao;
+    }
+
+    public NewsDao getNewsDao() {
+        return newsDao;
+    }
+
+    public static void setPathDatabase(String pathDatabase) {
+        ConnectionPool.setPathDatabaseProperties(pathDatabase);
     }
 }

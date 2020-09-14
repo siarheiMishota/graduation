@@ -9,10 +9,11 @@ public class SqlQuerySubjectResultDao {
 
     public static final String INSERT="insert into subjects_results (entrant_id, subject_id, points) values (?,?,?);";
 
+    public static final String DELETE="delete from subjects_results where id=";
 
     public static final String UPDATE_SUBJECT_RESULT_BY_ID="update subjects_results set entrant_id=?, subject_id=?,points=? where id=?";
 
 
-    public SqlQuerySubjectResultDao() {
+    private SqlQuerySubjectResultDao() {
     }
 }

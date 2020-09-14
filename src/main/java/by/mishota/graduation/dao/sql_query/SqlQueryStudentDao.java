@@ -13,6 +13,8 @@ public class SqlQueryStudentDao {
 
     public static final String INSERT="insert into students (user_id, faculty_id, budget) value (?,?,?);";
 
+    public static final String DELETE="delete from students where id=";
+
     private SqlQueryStudentDao() {
     }
 }

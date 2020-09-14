@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class MailSender {
 
-    private static final String PATH_MAIL_PROPERTIES = "mail.properties"; //todo
+    private static final String PATH_MAIL_PROPERTIES = "mail.properties";
 
 
     private Properties mailProperties;

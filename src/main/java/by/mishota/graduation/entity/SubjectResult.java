@@ -9,9 +9,11 @@ public class SubjectResult {
     public SubjectResult(int subjectId, int points) {
         this.subjectId = subjectId;
         this.points = points;
+        this.id=-1;
     }
 
     public SubjectResult() {
+        this.id=-1;
     }
 
     public int getId() {
@@ -38,7 +40,6 @@ public class SubjectResult {
         this.points = points;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,17 +54,17 @@ public class SubjectResult {
 
     @Override
     public int hashCode() {
-        int result1 = id;
-        result1 = 31 * result1 + subjectId;
-        result1 = 31 * result1 + points;
-        return result1;
+        int result = id;
+        result = 31 * result + subjectId;
+        result = 31 * result + points;
+        return result;
     }
 
     @Override
     public String toString() {
 
         StringBuilder builder = new StringBuilder();
-        builder.append("SubjectResult( ").append(id).append(", id subject= ").append(subjectId).append(",  ")
+        builder.append("SubjectResult( id= ").append(id).append(", subject= ").append(subjectId).append(",  ")
                 .append("result= ").append(points).append(")");
         return builder.toString();
     }

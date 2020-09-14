@@ -1,0 +1,130 @@
+package by.mishota.graduation.controller;
+
+public class Attribute {
+
+    public static final String INTERNAL_SERVER_ERROR = "InternalServerError";
+    public static final String SERVER_IS_TEMPORARILY_UNAVAILABLE = "Server is temporarily unavailable";
+
+    public static final String ATTRIBUTE_USER = "user";
+    public static final String ATTRIBUTE_LOGIN = "login";
+    public static final String ATTRIBUTE_EMAIL = "email";
+    public static final String ATTRIBUTE_PASSPORT_ID = "passportId";
+    public static final String ATTRIBUTE_ENTRANT = "entrant";
+    public static final String ATTRIBUTE_SUBJECTS = "subjects";
+    public static final String ATTRIBUTE_FACULTY_ID = "facultyId";
+    public static final String ATTRIBUTE_SUM_CERTIFICATES = "sumCertificates";
+    public static final String ATTRIBUTE_SUBJECT = "subject";
+    public static final String ATTRIBUTE_CERTIFICATE = "certificate";
+    public static final String ATTRIBUTE_ERRORS = "errors";
+    public static final String ATTRIBUTE_ACTIVATION_CODE = "activationCode";
+    public static final String ATTRIBUTE_GENDER = "gender";
+    public static final String ATTRIBUTE_PASSWORD = "password";
+    public static final String ATTRIBUTE_BIRTH = "birth";
+    public static final String ATTRIBUTE_PHOTOS = "photos";
+    public static final String ATTRIBUTE_PHOTO = "photo";
+    public static final String ATTRIBUTE_SURNAME = "surname";
+    public static final String ATTRIBUTE_FIRST_NAME = "firstName";
+    public static final String ATTRIBUTE_FATHER_NAME = "fatherName";
+    public static final String ATTRIBUTE_FACULTIES = "faculties";
+    public static final String ATTRIBUTE_NUMBER_OF_PAGE = "numberOfPage";
+    public static final String ATTRIBUTE_NUMBER_OF_PAGES = "numberOfPages";
+    public static final String ATTRIBUTE_LANGUAGE = "language";
+    public static final String ATTRIBUTE_NUMBER_PRIORITY_ROWS = "numberPriorityRows";
+    public static final String ATTRIBUTE_PRIORITY = "priority";
+    public static final String ATTRIBUTE_FACULTY = "faculty";
+    public static final String ATTRIBUTE_PAGE = "page";
+    public static final String ATTRIBUTE_REFERER = "referer";
+    public static final String ATTRIBUTE_POINTS = "points";
+    public static final String ATTRIBUTE_CERTIFICATE_VALUE = "certificateValue";
+    public static final String ATTRIBUTE_MESSAGE = "message";
+    public static final String ATTRIBUTE_MARK = "mark";
+    public static final String ATTRIBUTE_SUBJECT_NAMES = "subjectNames";
+    public static final String ATTRIBUTE_FACULTY_NAMES = "facultyNames";
+    public static final String ATTRIBUTE_PRIORITIES = "priorities";
+    public static final String ATTRIBUTE_NUMBER_PRIORITIES = "numberPriorities";
+    public static final String ATTRIBUTE_MAX_NUMBER_PHOTOS = "maxNumberPhotos";
+    public static final String ATTRIBUTE_ENTRANTS = "entrants";
+    public static final String ATTRIBUTE_ROLE = "role";
+    public static final String ATTRIBUTE_RU = "ru";
+    public static final String ATTRIBUTE_EN = "en";
+    public static final String ATTRIBUTE_ALL_NEWS = "allNews";
+    public static final String ATTRIBUTE_NEWS = "news";
+    public static final String ATTRIBUTE_NEWS_NAME_RU = "nameRu";
+    public static final String ATTRIBUTE_NEWS_NAME_EN = "nameEn";
+    public static final String ATTRIBUTE_NEWS_BRIEF_DESCRIPTION_RU = "briefDescriptionRu";
+    public static final String ATTRIBUTE_NEWS_BRIEF_DESCRIPTION_EN = "briefDescriptionEn";
+    public static final String ATTRIBUTE_NEWS_ENGLISH_VARIABLE = "englishVariable";
+    public static final String ATTRIBUTE_NEWS_RUSSIAN_VARIABLE = "russianVariable";
+    public static final String ATTRIBUTE_ENTRANT_ID = "entrantId";
+    public static final String ATTRIBUTE_NEWS_ID = "newsId";
+    public static final String ATTRIBUTE_MALE = "male";
+    public static final String ATTRIBUTE_FEMALE = "female";
+    public static final String ATTRIBUTE_JPG = ".jpg";
+    public static final String ATTRIBUTE_JPEG = ".jpeg";
+    public static final String ATTRIBUTE_PNG = ".png";
+    public static final String ATTRIBUTE_MAX_NUMBER_OF_PRIORITIES = "maxNumberOfPriorities";
+
+    public static final String VALUE_ATTRIBUTE_EMAIL_INCORRECT = "email.incorrect";
+    public static final String VALUE_ATTRIBUTE_SIMPLE_PASSWORD = "simple.password";
+    public static final String VALUE_ATTRIBUTE_BIRTH_INCORRECT = "birth.incorrect";
+    public static final String VALUE_ATTRIBUTE_BIRTH_IN_FUTURE = "birth.in.future";
+    public static final String VALUE_ATTRIBUTE_GENDER_INCORRECT = "gender.incorrect";
+    public static final String VALUE_ATTRIBUTE_PHOTO_INCORRECT_FORMAT = "photo.incorrectFormat";
+    public static final String VALUE_ATTRIBUTE_LONG_LENGTH = "long.length";
+    public static final String VALUE_ATTRIBUTE_NULL = "null";
+    public static final String SUBJECT_ACTIVATION_CODE = "Activation code";
+    public static final String VALUE_ATTRIBUTE_LOGIN = "login.is.taken";
+    public static final String VALUE_ATTRIBUTE_EMAIL = "email.is.taken";
+    public static final String VALUE_ATTRIBUTE_PASSPORT_ID = "passport.id.is.taken";
+    public static final String VALUE_ATTRIBUTE_NOT_ACTIVATED = "not.activated";
+    public static final String VALUE_ATTRIBUTE_NOT_EXIST = "not.exist";
+    public static final String VALUE_ATTRIBUTE_INCORRECT = "incorrect";
+    public static final String VALUE_ATTRIBUTE_DUPLICATE = "duplicate";
+    public static final String VALUE_ATTRIBUTE_USER_ACTIVATED = "user.activated";
+    public static final String VALUE_ATTRIBUTE_CODE_NOT_FOUND = "code.not.found";
+    public static final String VALUE_ATTRIBUTE_CERTIFICATES_FILL_IN = "certificates.fill.in";
+    public static final String VALUE_ATTRIBUTE_PRIORITIES_FILL_IN = "priorities.fill.in";
+    public static final String VALUE_ATTRIBUTE_NOT_IN_RANGE = "not.in.range";
+    public static final String VALUE_ATTRIBUTE_NOT_NUMBER = "not.number";
+    public static final String VALUE_ATTRIBUTE_DELETE_PRIORITY_FACULTIES_SUCCESS = "delete.priority.faculties.success";
+    public static final String VALUE_ATTRIBUTE_DELETE_PRIORITY_FACULTIES_ERROR = "delete.priority.faculties.error";
+    public static final String VALUE_ATTRIBUTE_UPDATING_SUCCESSFUL = "updatingSuccessful";
+    public static final String VALUE_ATTRIBUTE_ENTRANT_EXIST_FOR_ENTERING_EXIST = "entrantExistForEnteringCertificates";
+    public static final String VALUE_ATTRIBUTE_FACULTY_NULL = "facultyNull";
+    public static final String VALUE_ATTRIBUTE_USER_NULL = "userNull";
+    public static final String VALUE_ATTRIBUTE_ENTRANT_NULL = "entrantNull";
+    public static final String VALUE_ATTRIBUTE_MAX_NUMBER_IS_REACHED = "maxNumberIsReached";
+    public static final String VALUE_ATTRIBUTE_PRIORITIES_EMPTY = "prioritiesEmpty";
+    public static final String VALUE_ATTRIBUTE_PRIORITIES_EMPTY_FOR_SUBJECTS = "prioritiesEmptyForSubjects";
+    public static final String VALUE_ATTRIBUTE_NOT_SELECTED = "notSelected";
+    public static final String VALUE_ATTRIBUTE_CERTIFICATES_EMPTY = "certificatesEmpty";
+    public static final String VALUE_ATTRIBUTE_DELETE_CERTIFICATES_SUCCESS = "delete.certificates.success";
+    public static final String VALUE_ATTRIBUTE_DELETE_CERTIFICATES_ERROR = "delete.certificates.error";
+    public static final String VALUE_ATTRIBUTE_FACULTIES_NOT_FOUND_BY_SUBJECTS = "faculties.not.found.by.subjects";
+    public static final String VALUE_ATTRIBUTE_FACULTIES_NOT_FOUND_BY_SUBJECTS_ALREADY = "faculties.not.found.by.subjects.already";
+    public static final String VALUE_ATTRIBUTE_PHOTO_UPLOAD_SUCCESSFULLY = "uploadSuccessfully";
+    public static final String VALUE_ATTRIBUTE_PHOTO_UPLOAD_FAILED = "uploadFailed";
+    public static final String VALUE_ATTRIBUTE_PHOTOS_FILL_IN = "user.photos.fill.in";
+    public static final String VALUE_ATTRIBUTE_PHOTOS_EMPTY = "photos.empty";
+    public static final String VALUE_ATTRIBUTE_PHOTOS_NOT_SELECTED = "photos.not.selected";
+    public static final String VALUE_ATTRIBUTE_DELETE_PHOTOS_SUCCESS = "photos.delete.success";
+    public static final String VALUE_ATTRIBUTE_DELETE_PHOTOS_FAIL = "photos.delete.fail";
+    public static final String VALUE_ATTRIBUTE_NOT_ACCESS = "not.access";
+    public static final String VALUE_ATTRIBUTE_EMPTY = "empty";
+    public static final String VALUE_ATTRIBUTE_LONG = "long";
+    public static final String VALUE_ATTRIBUTE_SUCCESS = "success";
+    public static final String VALUE_ATTRIBUTE_NOT_SUCCESS = "not.success";
+    public static final String VALUE_ATTRIBUTE_INCORRECT_ENTRANT_ID = "incorrect.entrant.id";
+    public static final String VALUE_ATTRIBUTE_NON_EXISTENT_NEWS = "non.existent.news";
+    public static final String VALUE_ATTRIBUTE_UPDATE_PROFILE_SUCCESS = "update.profile.success";
+    public static final String VALUE_ATTRIBUTE_UPDATE_PROFILE_SUCCESS_AND_CHANGE_EMAIL = "update.profile.success.and.changed.email";
+    public static final String VALUE_ATTRIBUTE_SIGN_UP_COMPLETED_SUCCESSFULLY = "sign.up.completed.successfully";
+
+    public static final int MAX_NUMBER_OF_PRIORITIES = 10;
+    public static final int MAX_NUMBER_PHOTOS = 12;
+
+
+
+    private Attribute() {
+    }
+}
