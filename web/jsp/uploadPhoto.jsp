@@ -6,7 +6,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/headerStyle.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/app.07af92a5.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styleProject.css">
     <link rel="script" href="${pageContext.request.contextPath}/js/script.js">
 
     <title><fmt:message key="title" bundle="${uploadPhotoBundle}"/></title>

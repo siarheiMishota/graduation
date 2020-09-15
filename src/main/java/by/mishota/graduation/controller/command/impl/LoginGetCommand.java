@@ -7,6 +7,7 @@ import by.mishota.graduation.controller.command.ParamStringCommand;
 import by.mishota.graduation.entity.User;
 import by.mishota.graduation.resource.PagePathManager;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -15,7 +16,7 @@ import static by.mishota.graduation.resource.FilePath.PATH_PAGE_LOGIN;
 
 public class LoginGetCommand implements ActionCommand {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws ServletException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(Attribute.ATTRIBUTE_USER);
 

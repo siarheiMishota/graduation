@@ -2,6 +2,7 @@ package by.mishota.graduation.controller;
 
 import by.mishota.graduation.controller.command.ActionCommand;
 import by.mishota.graduation.controller.command.factory.CommandFactory;
+import by.mishota.graduation.exception.ServiceException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,6 +31,7 @@ public class Controller extends HttpServlet {
 
         Optional<ActionCommand> command = new CommandFactory().defineCommand(request.getParameter(COMMAND));
         Router router;
+
         if (command.isPresent()) {
                 router = command.get().execute(request);
 
@@ -38,6 +40,8 @@ public class Controller extends HttpServlet {
             } else {
                 response.sendRedirect(router.getPage());
             }
+        }else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 }

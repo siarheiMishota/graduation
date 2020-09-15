@@ -19,3 +19,7 @@ form {
     padding: 10px;
     font-size: 18px;
 }
+.has-image-centered {
+    margin-left: auto;
+    margin-right: auto;
+}
